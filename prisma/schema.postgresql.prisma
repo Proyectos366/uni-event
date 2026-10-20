@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model role {
+  id          Int      @id @default(autoincrement())
+  nombre      String   @unique
+  descripcion String?  @default("sin descripcion")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  nivel       Int      @unique
+
+  usuarios usuario[] @relation("UsuarioRole")
+
+  @@map("roles")
+}
+
+model usuario {
+  id           String   @id @default(uuid())
+  cedula       Int      @unique
+  nombre       String
+  nombreDos    String?
+  apellido     String
+  apellidoDos  String?
+  genero       Boolean
+  f_n          DateTime
+  nacionalidad Boolean
+  telefono     String   @unique
+  token        String   @unique
+  correo       String   @unique
+  clave        String
+  estatus      Boolean  @default(true)
+  borrado      Boolean  @default(false)
+  rolId        Int
+  usuarioId    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  sesiones         sesion[]
+  creador          usuario?  @relation("CreadorUsuarios", fields: [usuarioId], references: [id])
+  usuarios_creados usuario[] @relation("CreadorUsuarios")
+  roles            role      @relation("UsuarioRole", fields: [rolId], references: [id])
+
+  profesiones profesion[]
+  carreras    carrera[]
+
+  profesiones_creadas profesion[] @relation("CreadorProfesiones")
+  carreras_creadas    carrera[]   @relation("CreadorCarreras")
+
+  @@map("usuarios")
+}
+
+model profesion {
+  id          Int      @id @default(autoincrement())
+  nombre      String   @unique
+  descripcion String?
+  usuarioId   String? // ID del usuario creador
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  usuarios usuario[] // Lista de usuarios que tienen esta profesión
+  creador  usuario?  @relation("CreadorProfesiones", fields: [usuarioId], references: [id])
+
+  @@map("profesiones")
+}
+
+model carrera {
+  id          Int      @id @default(autoincrement())
+  nombre      String   @unique
+  codigo      String?  @unique
+  descripcion String?
+  usuarioId   String? // ID del usuario creador
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  usuarios usuario[] // Lista de usuarios que cursan esta carrera
+  creador  usuario?  @relation("CreadorCarreras", fields: [usuarioId], references: [id])
+
+  @@map("carreras")
+}
+
+model sesion {
+  id        Int       @id @default(autoincrement())
+  usuarioId String
+  token     String    @unique
+  activo    Boolean   @default(true)
+  ip        String?
+  device    String?
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  usuarios usuario @relation(fields: [usuarioId], references: [id])
+
+  @@map("sesiones")
+}

@@ -1,33 +1,33 @@
 import { PrismaLibSql } from "@prisma/adapter-libsql";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../generated/prisma/client";
 
 const globalForPrisma = globalThis;
-const tursoDatabaseUrl = process.env.TURSO_DATABASE_URL || undefined;
+const isVercel = Boolean(process.env.VERCEL);
+const sqliteDatabaseUrl =
+  process.env.SQLITE_DATABASE_URL ??
+  (process.env.DATABASE_URL?.startsWith("file:")
+    ? process.env.DATABASE_URL
+    : "file:./prisma/dev.db");
+const postgresDatabaseUrl =
+  process.env.POSTGRES_PRISMA_URL ??
+  process.env.POSTGRES_URL ??
+  process.env.POSTGRES_URL_NON_POOLING ??
+  process.env.DIRECT_URL ??
+  process.env.DATABASE_URL;
 
-const databaseUrl =
-  tursoDatabaseUrl ??
-  process.env.DATABASE_URL ??
-  "file:./prisma/dev.db";
-
-if (process.env.VERCEL && !tursoDatabaseUrl) {
+if (isVercel && !postgresDatabaseUrl) {
   throw new Error(
-    "TURSO_DATABASE_URL must be set on Vercel; local SQLite files are not persistent there.",
+    "Set a PostgreSQL URL in Vercel (POSTGRES_PRISMA_URL, POSTGRES_URL, POSTGRES_URL_NON_POOLING, DIRECT_URL, or DATABASE_URL).",
   );
 }
 
-if (tursoDatabaseUrl && !process.env.TURSO_AUTH_TOKEN) {
-  throw new Error("TURSO_AUTH_TOKEN must be set when using Turso.");
-}
-
-const adapter = new PrismaLibSql(
-  {
-    url: databaseUrl,
-    authToken: tursoDatabaseUrl
-      ? process.env.TURSO_AUTH_TOKEN
-      : undefined,
-  },
-  { timestampFormat: "unixepoch-ms" },
-);
+const adapter = isVercel
+  ? new PrismaPg({ connectionString: postgresDatabaseUrl })
+  : new PrismaLibSql(
+      { url: sqliteDatabaseUrl },
+      { timestampFormat: "unixepoch-ms" },
+    );
 
 export const prisma =
   globalForPrisma.prisma ??

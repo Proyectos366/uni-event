@@ -23,43 +23,47 @@ migración durante el desarrollo, usa `npm run db:migrate -- --name nombre`.
 `db:push` queda disponible para prototipos, pero no sustituye las migraciones
 versionadas del proyecto.
 
-## Vercel y Turso
+## Desarrollo local y Vercel
 
 Vercel ejecuta la aplicación en funciones cuyo disco local no es persistente.
-No uses el archivo SQLite local como base de datos desplegada. Para las pruebas
-en línea, crea una base SQLite-compatible en Turso. Con Turso CLI autenticado:
+El desarrollo local usa SQLite; Vercel usa PostgreSQL. Prisma necesita un
+esquema y un historial de migraciones distintos para cada proveedor.
+
+Localmente, `DATABASE_URL` puede apuntar a un archivo `file:...`; si no apunta a
+un archivo SQLite, la aplicación usa `prisma/dev.db`. También puedes definir
+`SQLITE_DATABASE_URL` para elegir el archivo. Las URLs PostgreSQL no se usan en
+el entorno local.
+
+Para producción, agrega una integración PostgreSQL desde **Vercel Marketplace**
+(por ejemplo, Neon; Vercel no proporciona una base de datos PostgreSQL propia
+por defecto). Configura las variables de conexión de la integración en Vercel:
+
+- `POSTGRES_URL` o `POSTGRES_PRISMA_URL`: URL PostgreSQL para la aplicación.
+- `POSTGRES_URL_NON_POOLING` o `DIRECT_URL`: conexión directa para aplicar
+  migraciones. Si el proveedor no define una URL directa, se usa la URL de la
+  aplicación.
+
+Aplica las migraciones PostgreSQL desde el directorio `prisma/migrations-postgresql`:
 
 ```powershell
-turso db create uni-event-production
-turso db show uni-event-production --url
-turso db tokens create uni-event-production
+npm run db:migrate:postgres -- --name nombre
 ```
 
-En Vercel, abre **Project Settings → Environment Variables** y agrega:
+En Vercel, `npm run build` genera el cliente PostgreSQL, aplica las migraciones
+pendientes con `prisma migrate deploy` y luego compila Next.js. Define las
+variables PostgreSQL también para Preview si vas a desplegar ese entorno.
+Configura además los secretos de aplicación de `.env.example` en Vercel; no
+subas `.env` al repositorio.
 
-- `TURSO_DATABASE_URL`: URL `libsql://...` de la base.
-- `TURSO_AUTH_TOKEN`: token de acceso de Turso.
+El esquema local SQLite es `prisma/schema.prisma` y sus migraciones están en
+`prisma/migrations`. El esquema PostgreSQL está en
+`prisma/schema.postgresql.prisma`, con migraciones en
+`prisma/migrations-postgresql`. Mantén ambos esquemas al día cuando cambien los
+modelos y crea las migraciones para cada proveedor por separado. Prisma genera
+el cliente correspondiente al entorno en cada build.
 
-Usa una base Turso vacía para el primer despliegue. Crea otra base para Preview
-y asigna a cada entorno su propia URL y token; así, las pruebas no ejecutan
-migraciones contra la base de producción.
-
-Configura también en Vercel los secretos de la aplicación que aparecen en
-`.env.example`; usa valores únicos y no subas el archivo `.env` al repositorio.
-El build de Vercel ejecuta `scripts/migrate-turso.mjs` antes de compilar: crea
-el registro de migraciones, aplica las pendientes y falla si las credenciales
-faltan, una migración falló previamente o una migración aplicada fue modificada.
-
-Para futuras modificaciones, crea y revisa la migración localmente con
-`npm run db:migrate -- --name nombre`. Las migraciones de Turso se ejecutan en
-el siguiente build de Vercel; también puedes probar el proceso con
-`npm run db:migrate:turso` después de exportar `TURSO_DATABASE_URL` y
-`TURSO_AUTH_TOKEN`. No uses `db:migrate:deploy` contra Turso.
-
-El cliente generado se crea durante `npm run build`; no requiere archivos
-TypeScript escritos a mano. La configuración de Prisma se encuentra en
-`prisma.config.mjs`. En Vercel se omite el modo `standalone`, reservado aquí
-para el despliegue Docker.
+En Vercel se omite el modo `standalone`, reservado aquí para el despliegue
+Docker, que sigue usando SQLite persistente en un volumen.
 
 ## Docker
 
