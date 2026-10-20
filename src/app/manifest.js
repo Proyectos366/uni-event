@@ -7,7 +7,7 @@ export default function manifest() {
     start_url: "/",
     display: "standalone",
     background_color: "#f4f2eb",
-    theme_color: "#00c885",
+    theme_color: "#00e699",
     icons: [
       {
         src: "/icons/icon-192.png",
