@@ -1,0 +1,42 @@
+// Correr el servidor con Docker normalmente
+docker compose up
+
+// Correr el servidor con Docker, si se hacen cambios en la estructura
+docker compose up --build
+
+// Crear un archivo .env en la raiz del proyecto y agregar:
+DATABASE_URL="file:./prisma/dev.db"
+JWT_SECRET = miTextoSecreto
+JWT_EXPIRATION = 12h
+JWT_COOKIE_EXPIRES = 1
+
+// Crear una migracion:
+npx prisma migrate dev --name inicial
+
+// Correr prisma studio:
+npx prisma studio
+
+// Si se crean nuevos modelos o actualizan se debe hacer esto:
+npx prisma migrate dev --name nombre-descripcion-del-cambio
+
+// Actualizar prisma:
+npx prisma generate
+
+// Crear el usuario por defecto con los sedeers:
+npx prisma db seed
+
+// Eliminar todas las migraciones:
+rm -rf prisma/migrations
+
+// Eliminar los node_modules
+rm -rf node_modules
+
+// Resetear toda la base de datos
+npx prisma migrate reset
+
+- J-12345678-4
+- G-20001980-8
+- V-12345678-5
+- E-87654321-7
+- P-11223344-0
+
