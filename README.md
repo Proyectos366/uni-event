@@ -23,16 +23,36 @@ migración durante el desarrollo, usa `npm run db:migrate -- --name nombre`.
 `db:push` queda disponible para prototipos, pero no sustituye las migraciones
 versionadas del proyecto.
 
+`npm run dev` selecciona SQLite local y genera el cliente Prisma del esquema
+SQLite antes de iniciar Next.js. Para probar localmente con Neon, configura sus
+variables de conexión en `.env` y ejecuta `npm run dev:neon`; este comando
+selecciona PostgreSQL y genera el cliente correspondiente sin cambiar archivos
+ni modificar la base de datos.
+
+Los comandos de base de datos para Neon usan explícitamente su esquema:
+
+```powershell
+npm run db:seed:postgres
+npm run db:migrate:postgres -- --name nombre
+npm run db:migrate:deploy:postgres
+npm run db:studio:postgres
+```
+
+`npx prisma db seed` usa SQLite por defecto. Para sembrar Neon, usa
+`npm run db:seed:postgres`. Ejecuta migraciones y seeds contra una rama de
+desarrollo de Neon, no contra producción.
+
 ## Desarrollo local y Vercel
 
 Vercel ejecuta la aplicación en funciones cuyo disco local no es persistente.
-El desarrollo local usa SQLite; Vercel usa PostgreSQL. Prisma necesita un
+El desarrollo local usa SQLite por defecto y puede cambiar a Neon con
+`npm run dev:neon`; Vercel usa PostgreSQL. Prisma necesita un
 esquema y un historial de migraciones distintos para cada proveedor.
 
 Localmente, `DATABASE_URL` puede apuntar a un archivo `file:...`; si no apunta a
 un archivo SQLite, la aplicación usa `prisma/dev.db`. También puedes definir
-`SQLITE_DATABASE_URL` para elegir el archivo. Las URLs PostgreSQL no se usan en
-el entorno local.
+`SQLITE_DATABASE_URL` para elegir el archivo. `npm run dev:neon` usa las
+variables PostgreSQL disponibles, como `POSTGRES_PRISMA_URL` o `POSTGRES_URL`.
 
 Para producción, agrega una integración PostgreSQL desde **Vercel Marketplace**
 (por ejemplo, Neon; Vercel no proporciona una base de datos PostgreSQL propia

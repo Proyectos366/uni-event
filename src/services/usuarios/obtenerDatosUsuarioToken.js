@@ -5,8 +5,8 @@
 */
 
 import prisma from "@/libs/prisma"; // Cliente Prisma para interactuar con la base de datos
-import retornarRespuestaFunciones from "@/utils/respuestasValidaciones"; // Utilidad para generar respuestas estandarizadas
-import obtenerCorreoToken from "@/utils/obtenerCorreoToken"; // Función para extraer el correo y rol del usuario desde el token
+import respuestasAlBack from "@/libs/respuestasAlBack"; // Utilidad para generar respuestas estandarizadas
+import obtenerCorreoToken from "@/services/usuarios/obtenerCorreoToken"; // Función para extraer el correo y rol del usuario desde el token
 
 /**
  Obtiene los datos del usuario activo utilizando su correo extraído del token.
@@ -22,10 +22,7 @@ export default async function obtenerDatosUsuarioToken() {
 
     // 2. Si el token es inválido o no contiene datos, retornar error.
     if (validaciones.status === "error") {
-      return retornarRespuestaFunciones(
-        validaciones.status,
-        validaciones.message,
-      );
+      return respuestasAlBack(validaciones.status, validaciones.message);
     }
 
     // 3. Consultar en la base de datos los datos del usuario por correo.
@@ -35,45 +32,27 @@ export default async function obtenerDatosUsuarioToken() {
         id: true,
         cedula: true,
         nombre: true,
-        MiembrosInstitucion: {
-          select: { id: true, nombre: true, id_municipio: true, codigo: true },
-        },
-        MiembrosDepartamentos: {
-          select: { id: true, nombre: true, codigo: true },
-        },
       },
     });
 
     // 4. Si no se encuentra el usuario, retornar error.
     if (!datosUsuario) {
-      return retornarRespuestaFunciones("error", "Error, usuario invalido...");
+      return respuestasAlBack("error", "Error, usuario invalido");
     }
 
     // 5. Retornar los datos consolidados del usuario.
-    return retornarRespuestaFunciones("ok", "Datos usuario obtenidos...", {
-      datosUsuario: datosUsuario,
+    return respuestasAlBack("ok", "Datos usuario obtenidos", {
       cedula: datosUsuario.cedula,
       nombre: datosUsuario.nombre,
-      id_usuario: datosUsuario.id,
       correo: validaciones.correo,
+      id_usuario: datosUsuario.id,
       id_rol: validaciones.id_rol,
-      MiembrosInstitucion: datosUsuario.MiembrosInstitucion[0],
-      id_municipio: datosUsuario?.MiembrosInstitucion?.[0]?.id_municipio,
-      id_institucion: datosUsuario?.MiembrosInstitucion?.[0]?.id,
-      id_departamento: datosUsuario?.MiembrosDepartamentos?.[0]?.id,
-      nombreInstitucion: datosUsuario?.MiembrosInstitucion?.[0]?.nombre,
-      nombreDepartamento: datosUsuario?.MiembrosDepartamentos?.[0]?.nombre,
-      codInst: datosUsuario?.MiembrosInstitucion?.[0]?.codigo,
-      codDepa: datosUsuario?.MiembrosDepartamentos?.[0]?.codigo,
     });
   } catch (error) {
     // 6. Manejo de errores inesperados.
     console.log("Error interno obtener datos usuario: " + error);
 
     // Retorna una respuesta del error inesperado
-    return retornarRespuestaFunciones(
-      "error",
-      "Error interno obtener datos usuario...",
-    );
+    return respuestasAlBack("error", "Error interno obtener datos usuario");
   }
 }

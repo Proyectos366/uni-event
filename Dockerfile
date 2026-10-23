@@ -17,6 +17,7 @@ FROM dependencies AS migrator
 
 COPY prisma ./prisma
 COPY prisma.config.mjs ./prisma.config.mjs
+COPY database.config.mjs ./database.config.mjs
 
 ENV NODE_ENV=production
 USER nextjs

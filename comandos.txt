@@ -1,3 +1,8 @@
+// Esto correra el proyecto en local usando sqlite
+npm run dev
+
+// Esto correra el proyecto en local pero usando postgreSql
+
 // Correr el servidor con Docker normalmente
 docker compose up
 

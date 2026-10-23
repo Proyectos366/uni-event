@@ -1,7 +1,7 @@
 /**
  @fileoverview Clase utilitaria para cifrado y comparación de contraseñas. Utiliza la librería bcryptjs
  para encriptar claves y verificar coincidencias. Proporciona métodos estáticos para facilitar su uso
- en controladores o servicios. @module utils/CifrarDescifrarClaves
+ en controladores o servicios. @module libs/CifrarDescifrarClaves
 */
 
 import bcryptjs from "bcryptjs"; // Librería para cifrado seguro de contraseñas
@@ -29,17 +29,17 @@ export default class CifrarDescifrarClaves {
       // 3. Retorna la clave cifrada en una respuesta exitosa
       return {
         status: "ok",
-        message: "Clave encriptada con exito...",
+        message: "Clave encriptada con exito",
         claveEncriptada: claveEncriptada,
       };
     } catch (error) {
       // 4. Manejo de errores inesperados durante el cifrado
-      console.log("Error, al encriptar clave: " + error);
+      console.log("Error, al encriptar clave:", error);
 
       // Retorno de una respuesta de error inesperado
       return {
         status: "error",
-        message: "Error, al encriptar clave...",
+        message: "Error, al encriptar clave",
       };
     }
   }
@@ -61,23 +61,23 @@ export default class CifrarDescifrarClaves {
       if (!comparada) {
         return {
           status: "error",
-          message: "Error, credenciales invalidas...",
+          message: "Error, credenciales invalidas",
         };
       }
 
       // 3. Si coinciden, retorna éxito
       return {
         status: "ok",
-        message: "Claves verificadas con éxito...",
+        message: "Claves verificadas con éxito",
       };
     } catch (error) {
       // 4. Manejo de errores durante la comparación
-      console.log("Error, al comparar clave: " + error);
+      console.log("Error, al comparar clave:", error);
 
       // Retorno de una respuesta de error inesperado
       return {
         status: "error",
-        message: "Error interno al comparar claves...",
+        message: "Error interno al comparar claves",
       };
     }
   }

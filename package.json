@@ -4,18 +4,25 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node scripts/run-dev.mjs sqlite",
+    "dev:neon": "node scripts/run-dev.mjs postgresql",
     "build": "node scripts/build.mjs",
     "start": "next start",
     "lint": "eslint .",
     "prisma:generate": "prisma generate",
+    "prisma:seed": "npm run prisma:seed:sqlite",
+    "prisma:seed:sqlite": "node scripts/prisma-seed.mjs sqlite",
+    "prisma:seed:postgres": "node scripts/prisma-seed.mjs postgresql",
     "db:push": "prisma db push",
+    "db:push:postgres": "prisma db push --config prisma.postgresql.config.mjs",
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
     "db:migrate:postgres": "prisma migrate dev --config prisma.postgresql.config.mjs",
     "db:migrate:deploy:postgres": "prisma migrate deploy --config prisma.postgresql.config.mjs",
     "db:migrate:resolve": "prisma migrate resolve",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "db:studio:postgres": "prisma studio --config prisma.postgresql.config.mjs",
+    "db:seed:postgres": "prisma db seed --config prisma.postgresql.config.mjs"
   },
   "dependencies": {
     "@libsql/client": "^0.17.0",

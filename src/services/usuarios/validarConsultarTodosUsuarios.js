@@ -4,8 +4,8 @@
  @module services/usuarios/validarConsultarTodosUsuarios
 */
 
-import retornarRespuestaFunciones from "@/utils/respuestasValidaciones"; // Utilidad para generar respuestas estandarizadas
-import obtenerDatosUsuarioToken from "../obtenerDatosUsuarioToken"; // Función para obtener los datos del usuario activo a través del token de autenticación
+import respuestasAlBack from "@/libs/respuestasAlBack"; // Utilidad para generar respuestas estandarizadas
+import obtenerDatosUsuarioToken from "@/services/usuarios/obtenerDatosUsuarioToken"; // Función para obtener los datos del usuario activo a través del token de autenticación
 
 /**
  Valida la identidad del usuario y sus permisos para acceder a la consulta de todos los usuarios.
@@ -21,33 +21,27 @@ export default async function validarConsultarTodosUsuarios() {
 
     // 2. Si el token es inválido, se retorna un error.
     if (validaciones.status === "error") {
-      return retornarRespuestaFunciones(
-        validaciones.status,
-        validaciones.message
-      );
+      return respuestasAlBack(validaciones.status, validaciones.message);
     }
 
     // 3. Verificar si el usuario tiene permisos (rol 1 o rol 2).
     if (validaciones.id_rol !== 1 && validaciones.id_rol !== 2) {
-      return retornarRespuestaFunciones(
-        "error",
-        "Error, usuario no tiene permisos..."
-      );
+      return respuestasAlBack("error", "Error, usuario no tiene permisos");
     }
 
     // 4. Si todas las validaciones son correctas, se consolidan y retornan los datos validados.
-    return retornarRespuestaFunciones("ok", "Validacion correcta", {
+    return respuestasAlBack("ok", "Validacion correcta", {
       id_usuario: validaciones.id_usuario,
       correo: validaciones.correo,
     });
   } catch (error) {
     // 5. Manejo de errores inesperados.
-    console.log("Error interno validar consultar todos usuarios: " + error);
+    console.log("Error interno validar consultar todos usuarios:", error);
 
     // Retorna una respuesta del error inesperado
-    return retornarRespuestaFunciones(
+    return respuestasAlBack(
       "error",
-      "Error interno validar consultar todos usuarios"
+      "Error interno validar consultar todos usuarios",
     );
   }
 }
