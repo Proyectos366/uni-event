@@ -1,28 +1,5 @@
-import "dotenv/config";
-import { PrismaLibSql } from "@prisma/adapter-libsql";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../src/generated/prisma/client.ts";
-import {
-  getDatabaseProvider,
-  getDirectPostgresDatabaseUrl,
-  getSqliteDatabaseUrl,
-} from "../database.config.mjs";
+import { prisma } from "@/config/prisma";
 
-const databaseProvider = getDatabaseProvider();
-const postgresDatabaseUrl = getDirectPostgresDatabaseUrl();
-
-if (databaseProvider === "postgresql" && !postgresDatabaseUrl) {
-  throw new Error("Configura una URL de PostgreSQL antes de ejecutar el seed.");
-}
-
-const adapter =
-  databaseProvider === "postgresql"
-    ? new PrismaPg({ connectionString: postgresDatabaseUrl })
-    : new PrismaLibSql(
-        { url: getSqliteDatabaseUrl() },
-        { timestampFormat: "unixepoch-ms" },
-      );
-const prisma = new PrismaClient({ adapter });
 
 async function main() {
   const roles = [

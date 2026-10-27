@@ -5,7 +5,7 @@
  @module services/ValidarCampos
 */
 
-import retornarRespuestaFunciones from "@/utils/respuestasValidaciones"; // Utilidad para estructurar respuestas internas
+import respuestasAlBack from "@/libs/respuestasAlBack"; // Utilidad para estructurar respuestas internas
 import { quitarCaracteres } from "@/utils/quitarCaracteres"; // Función para limpiar caracteres no deseados
 
 import { cedulaRegex } from "@/utils/regex/cedulaRegex";
@@ -36,14 +36,14 @@ export default class ValidarCampos {
     try {
       // 1. Verifica si el campo está vacío
       if (!correo) {
-        return retornarRespuestaFunciones("error", "Campo correo vacio...");
+        return respuestasAlBack("error", "Campo correo vacio");
       }
 
       // 2. Valida el formato del correo usando expresión regular
       if (!emailRegex.test(correo)) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
-          "Error, formato de correo invalido...",
+          "Error, formato de correo invalido",
         );
       }
 
@@ -51,7 +51,7 @@ export default class ValidarCampos {
       const correoLetrasMinusculas = correo.toLowerCase();
 
       // 4. Retorna respuesta exitosa con el correo validado
-      return retornarRespuestaFunciones("ok", "Campo correo correcto...", {
+      return respuestasAlBack("ok", "Campo correo correcto", {
         correo: correoLetrasMinusculas,
       });
     } catch (error) {
@@ -59,7 +59,7 @@ export default class ValidarCampos {
       console.log(`Error interno campo correo: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones("error", "Error interno campo correo");
+      return respuestasAlBack("error", "Error interno campo correo");
     }
   }
 
@@ -74,14 +74,14 @@ export default class ValidarCampos {
     try {
       // 1. Verifica si el campo está vacío
       if (!nombre) {
-        return retornarRespuestaFunciones("error", "Error, campo nombre vacio");
+        return respuestasAlBack("error", "Error, campo nombre vacio");
       }
 
       // 2. Valida el formato del nombre usando expresión regular
       if (!textRegex.test(nombre)) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
-          "Error, formato de nombre invalido probando",
+          "Error, formato de nombre invalido",
         );
       }
 
@@ -89,7 +89,7 @@ export default class ValidarCampos {
       const nombreLetrasMinusculas = nombre.toLowerCase();
 
       // 4. Retorna respuesta exitosa con el nombre validado
-      return retornarRespuestaFunciones("ok", "Campo nombre correcto", {
+      return respuestasAlBack("ok", "Campo nombre correcto", {
         nombre: nombreLetrasMinusculas,
       });
     } catch (error) {
@@ -97,7 +97,45 @@ export default class ValidarCampos {
       console.log(`Error interno campo nombre: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones("error", "Error interno campo nombre");
+      return respuestasAlBack("error", "Error interno campo nombre");
+    }
+  }
+
+  /**
+   Valida el campo de apellido. Verifica que no esté vacío y que cumpla con el formato de texto
+   permitido (letras y espacios). Convierte el apellido a minúsculas para normalizarlo.
+   @function validarCampoApellido
+   @param {string} apellido - Apellido ingresado por el usuario.
+   @returns {Object} Objeto con estado, mensaje y apellido normalizado si es válido.
+  */
+  static validarCampoApellido(apellido) {
+    try {
+      // 1. Verifica si el campo está vacío
+      if (!apellido) {
+        return respuestasAlBack("error", "Error, campo apellido vacio");
+      }
+
+      // 2. Valida el formato del apellido usando expresión regular
+      if (!textRegex.test(apellido)) {
+        return respuestasAlBack(
+          "error",
+          "Error, formato de apellido invalido",
+        );
+      }
+
+      // 3. Normaliza el apellido a minúsculas
+      const apellidoLetrasMinusculas = apellido.toLowerCase();
+
+      // 4. Retorna respuesta exitosa con el apellido validado
+      return respuestasAlBack("ok", "Campo apellido correcto", {
+        apellido: apellidoLetrasMinusculas,
+      });
+    } catch (error) {
+      // 5. Manejo de errores inesperados
+      console.log(`Error interno campo apellido: ` + error);
+
+      // Retorna una respuesta del error inesperado
+      return respuestasAlBack("error", "Error interno campo apellido");
     }
   }
 
@@ -112,17 +150,14 @@ export default class ValidarCampos {
     try {
       // 1. Verifica si el campo está vacío
       if (!texto) {
-        return retornarRespuestaFunciones(
-          "error",
-          "Error campo texto vacio...",
-        );
+        return respuestasAlBack("error", "Error campo texto vacio");
       }
 
       // 2. Normaliza el texto a minúsculas
       const textoLetrasMinusculas = texto.toLowerCase();
 
       // 3. Retorna respuesta exitosa con el texto validado
-      return retornarRespuestaFunciones("ok", "Campo valido...", {
+      return respuestasAlBack("ok", "Campo valido", {
         texto: textoLetrasMinusculas,
       });
     } catch (error) {
@@ -130,72 +165,7 @@ export default class ValidarCampos {
       console.log(`Error, interno campo texto: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error, interno campo texto...",
-      );
-    }
-  }
-
-  /**
-   Valida el campo de alias. Verifica que no esté vacío y que cumpla con el formato
-   permitido: letras, números, espacios y el prefijo "no" (opcional).
-   Formato válido: "estante no 01", "estante 01", "estante rosado grande no 01", "estante 0001"
-   @function validarCampoAlias
-   @param {string} alias - Alias ingresado por el usuario.
-   @returns {Object} Objeto con estado, mensaje y alias normalizado si es válido.
-  */
-  static validarCampoAlias(alias, indice) {
-    try {
-      // 1. Verifica si el campo está vacío
-      if (!alias) {
-        return retornarRespuestaFunciones("error", "Error, campo alias vacío");
-      }
-
-      // 2. Mapeo de índices a expresiones regulares (fácil de extender)
-      const regexMap = {
-        0: estanteRegex, // Estantes
-        1: carpetaRegex, // Carpetas (requiere números)
-        2: regexGeneral, // Nombres simples
-        // Futuras opciones:
-        // 3: regexArchivo,
-        // 4: regexDirectorio,
-        // 5: regexRutaCompleta
-      };
-
-      // 3. Normalizar índice: null, undefined, "" se tratan como 0
-      const indiceNormalizado =
-        indice === null || indice === undefined || indice === "" ? 0 : indice;
-
-      // 4. Obtener el regex correspondiente
-      const regex = regexMap[indiceNormalizado];
-
-      // 5. Validar que el índice exista en el mapa
-      if (!regex) {
-        return retornarRespuestaFunciones(
-          "error",
-          `Error, índice ${indice} no válido. Opciones disponibles: ${Object.keys(regexMap).join(", ")}`,
-        );
-      }
-
-      // 6. Validar formato
-      if (!regex.test(alias)) {
-        return retornarRespuestaFunciones(
-          "error",
-          "Error, formato de alias inválido",
-        );
-      }
-
-      // 7. Normaliza el alias
-      const aliasNormalizado = alias.toLowerCase();
-
-      // 8. Retorna respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campo alias correcto", {
-        alias: aliasNormalizado,
-      });
-    } catch (error) {
-      console.log(`Error interno campo alias: ` + error);
-      return retornarRespuestaFunciones("error", "Error interno campo alias");
+      return respuestasAlBack("error", "Error, interno campo texto");
     }
   }
 
@@ -210,17 +180,14 @@ export default class ValidarCampos {
     try {
       // 1. Verifica si el campo está vacío
       if (!codigoPostal) {
-        return retornarRespuestaFunciones(
-          "error",
-          "Error, campo codigo postal vacio...",
-        );
+        return respuestasAlBack("error", "Error, campo codigo postal vacio");
       }
 
       // 2. Normaliza el código postal a minúsculas
       const textoLetrasMinusculas = codigoPostal.toLowerCase();
 
       // 3. Retorna respuesta exitosa con el código postal validado
-      return retornarRespuestaFunciones("ok", "Campo valido...", {
+      return respuestasAlBack("ok", "Campo valido", {
         codigoPostal: textoLetrasMinusculas,
       });
     } catch (error) {
@@ -228,10 +195,7 @@ export default class ValidarCampos {
       console.log(`Error interno campo codigo postal: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campo codigo postal...",
-      );
+      return respuestasAlBack("error", "Error interno campo codigo postal");
     }
   }
 
@@ -248,7 +212,7 @@ export default class ValidarCampos {
     try {
       // 1. Si el campo está presente, valida que solo contenga letras
       if (nombre && !textRegex.test(nombre)) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
           `Error, segundo ${
             opcion === "apellido" ? "apellido" : "nombre"
@@ -263,11 +227,9 @@ export default class ValidarCampos {
           : { nombre_dos: nombre ? nombre.toLowerCase() : "" };
 
       // 3. Retorna respuesta exitosa con el campo validado
-      return retornarRespuestaFunciones(
+      return respuestasAlBack(
         "ok",
-        `Campo segundo ${
-          opcion === "apellido" ? "apellido" : "nombre"
-        } valido...`,
+        `Campo segundo ${opcion === "apellido" ? "apellido" : "nombre"} valido`,
         campo,
       );
     } catch (error) {
@@ -279,11 +241,11 @@ export default class ValidarCampos {
       );
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
+      return respuestasAlBack(
         "error",
         `Error interno validando segundo ${
           opcion === "apellido" ? "apellido" : "nombre"
-        }...`,
+        }`,
       );
     }
   }
@@ -299,7 +261,7 @@ export default class ValidarCampos {
     try {
       // 1. Verifica si el campo está vacío
       if (!cedula) {
-        return retornarRespuestaFunciones("error", "Campo cedula vacio...");
+        return respuestasAlBack("error", "Campo cedula vacio");
       }
 
       // 2. Elimina caracteres no numéricos
@@ -310,27 +272,21 @@ export default class ValidarCampos {
 
       // 4. Verifica si es un número válido
       if (isNaN(cedulaNumero)) {
-        return retornarRespuestaFunciones("error", "Error, cedula inválida...");
+        return respuestasAlBack("error", "Error, cedula inválida");
       }
 
       // 5. Verifica longitud válida (7 u 8 dígitos)
       if (cedulaNumero.length < 7 || cedulaNumero.length > 8) {
-        return retornarRespuestaFunciones(
-          "error",
-          "Error, cedula incorrecta....",
-        );
+        return respuestasAlBack("error", "Error, cedula incorrecta.");
       }
 
       // 6. Verifica formato con expresión regular
       if (!cedulaRegex.test(cedulaNumero)) {
-        return retornarRespuestaFunciones(
-          "error",
-          "Formato de cédula invalido...",
-        );
+        return respuestasAlBack("error", "Formato de cédula invalido");
       }
 
       // 7. Retorna respuesta exitosa con la cédula validada
-      return retornarRespuestaFunciones("ok", "Campo cedula correcto...", {
+      return respuestasAlBack("ok", "Campo cedula correcto", {
         cedula: cedulaNumero,
       });
     } catch (error) {
@@ -338,7 +294,7 @@ export default class ValidarCampos {
       console.log(`Error interno, campo cedula: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones("error", "Error interno, campo cedula");
+      return respuestasAlBack("error", "Error interno, campo cedula");
     }
   }
 
@@ -353,7 +309,7 @@ export default class ValidarCampos {
     try {
       // 1. Verifica si el campo está vacío
       if (!telefono) {
-        return retornarRespuestaFunciones("error", "Campo teléfono vacio...");
+        return respuestasAlBack("error", "Campo teléfono vacio");
       }
 
       // 2. Elimina caracteres no numéricos
@@ -361,14 +317,11 @@ export default class ValidarCampos {
 
       // 3. Verifica formato con expresión regular
       if (!phoneRegex.test(telefonoLimpio)) {
-        return retornarRespuestaFunciones(
-          "error",
-          "Error, formato teléfono invalido...",
-        );
+        return respuestasAlBack("error", "Error, formato teléfono invalido");
       }
 
       // 4. Retorna respuesta exitosa con el teléfono validado
-      return retornarRespuestaFunciones("ok", "Campo teléfono valido...", {
+      return respuestasAlBack("ok", "Campo teléfono valido", {
         telefono: telefonoLimpio,
       });
     } catch (error) {
@@ -376,10 +329,7 @@ export default class ValidarCampos {
       console.log(`Error interno, campo teléfono: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno, campo teléfono",
-      );
+      return respuestasAlBack("error", "Error interno, campo teléfono");
     }
   }
 
@@ -394,7 +344,7 @@ export default class ValidarCampos {
     try {
       // 1. Verifica si el campo está vacío
       if (!edad) {
-        return retornarRespuestaFunciones("error", "Campo edad vacio...");
+        return respuestasAlBack("error", "Campo edad vacio");
       }
 
       // 2. Convierte el valor a número
@@ -402,24 +352,21 @@ export default class ValidarCampos {
 
       // 3. Verifica si es un número válido y positivo
       if (isNaN(edadNumero) || edadNumero <= 0) {
-        return retornarRespuestaFunciones("error", "Error, edad inválida...");
+        return respuestasAlBack("error", "Error, edad inválida");
       }
 
       // 4. Verifica si la edad es excesivamente alta
       if (edadNumero > 99) {
-        return retornarRespuestaFunciones("error", "Error, edad muy alta....");
+        return respuestasAlBack("error", "Error, edad muy alta.");
       }
 
       // 5. Verifica si es menor de edad
       if (edadNumero < 18) {
-        return retornarRespuestaFunciones(
-          "error",
-          "Error, es un menor de edad....",
-        );
+        return respuestasAlBack("error", "Error, es un menor de edad.");
       }
 
       // 6. Retorna respuesta exitosa con la edad validada
-      return retornarRespuestaFunciones("ok", "Campo edad valido...", {
+      return respuestasAlBack("ok", "Campo edad valido", {
         edad: edadNumero,
       });
     } catch (error) {
@@ -427,7 +374,7 @@ export default class ValidarCampos {
       console.log(`Error interno, campo edad: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones("error", "Error interno, campo edad");
+      return respuestasAlBack("error", "Error interno, campo edad");
     }
   }
 
@@ -443,10 +390,7 @@ export default class ValidarCampos {
     try {
       // 1. Verifica si el campo está vacío
       if (!id) {
-        return retornarRespuestaFunciones(
-          "error",
-          `Campo id ${detalles} vacio...`,
-        );
+        return respuestasAlBack("error", `Campo id ${detalles} vacio`);
       }
 
       // 2. Convierte el valor a número
@@ -454,26 +398,19 @@ export default class ValidarCampos {
 
       // 3. Verifica si es un número válido y positivo
       if (isNaN(idNumero) || idNumero <= 0) {
-        return retornarRespuestaFunciones(
-          "error",
-          `Error, id ${detalles} inválido...`,
-        );
+        return respuestasAlBack("error", `Error, id ${detalles} inválido`);
       }
 
       // 4. Retorna respuesta exitosa con el ID validado
-      return retornarRespuestaFunciones(
-        "ok",
-        `Campo id ${detalles} valido...`,
-        {
-          id: idNumero,
-        },
-      );
+      return respuestasAlBack("ok", `Campo id ${detalles} valido`, {
+        id: idNumero,
+      });
     } catch (error) {
       // 5. Manejo de errores inesperados
       console.log(`Error, interno al (validar id ${detalles}): ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
+      return respuestasAlBack(
         "error",
         `Error, interno al (validar id ${detalles})`,
       );
@@ -492,38 +429,29 @@ export default class ValidarCampos {
     try {
       // 1. Verifica si la contraseña principal está vacía
       if (!claveUno) {
-        return retornarRespuestaFunciones(
-          "error",
-          "Error campo clave vacio...",
-        );
+        return respuestasAlBack("error", "Error campo clave vacio");
       }
 
       // 2. Verifica si el campo de confirmación está vacío
       if (!claveDos) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
-          "Error campo confirmar clave vacio...",
+          "Error campo confirmar clave vacio",
         );
       }
 
       // 3. Verifica si ambas contraseñas coinciden
       if (claveUno !== claveDos) {
-        return retornarRespuestaFunciones(
-          "error",
-          "Error, claves no coinciden...",
-        );
+        return respuestasAlBack("error", "Error, claves no coinciden");
       }
 
       // 4. Verifica si la contraseña cumple con el formato seguro
       if (!claveRegex.test(claveUno)) {
-        return retornarRespuestaFunciones(
-          "error",
-          "Error, formato de clave invalido...",
-        );
+        return respuestasAlBack("error", "Error, formato de clave invalido");
       }
 
       // 5. Retorna respuesta exitosa con las claves validadas
-      return retornarRespuestaFunciones("ok", "Campos de clave validados...", {
+      return respuestasAlBack("ok", "Campos de clave validados", {
         claveUno: claveUno,
         claveDos: claveDos,
       });
@@ -532,10 +460,7 @@ export default class ValidarCampos {
       console.log(`Error interno, campos claves: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno, campos claves",
-      );
+      return respuestasAlBack("error", "Error interno, campos claves");
     }
   }
 
@@ -550,10 +475,7 @@ export default class ValidarCampos {
     try {
       // 1. Verifica si el campo está vacío
       if (genero === null || genero === undefined || genero === "") {
-        return retornarRespuestaFunciones(
-          "error",
-          "Error, campo genero vacío...",
-        );
+        return respuestasAlBack("error", "Error, campo genero vacío");
       }
 
       // 2. Normaliza el valor a string en minúsculas
@@ -561,9 +483,9 @@ export default class ValidarCampos {
 
       // 3. Acepta valores válidos: "1", "2", "true", "false"
       if (!["1", "2", "true", "false"].includes(valor)) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
-          "Error, campo debe ser hombre o mujer...",
+          "Error, campo debe ser hombre o mujer",
         );
       }
 
@@ -576,15 +498,12 @@ export default class ValidarCampos {
       }
 
       // 5. Retorna respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campo genero validado...", {
+      return respuestasAlBack("ok", "Campo genero validado", {
         genero: generoBooleano,
       });
     } catch (error) {
       console.log(`Error interno campo genero: ` + error);
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campo genero...",
-      );
+      return respuestasAlBack("error", "Error interno campo genero");
     }
   }
 
@@ -600,10 +519,7 @@ export default class ValidarCampos {
     try {
       // 1. Verifica si el campo está vacío
       if (!numero) {
-        return retornarRespuestaFunciones(
-          "error",
-          `Error, campo ${opcion} vacio...`,
-        );
+        return respuestasAlBack("error", `Error, campo ${opcion} vacio`);
       }
 
       // 2. Convierte el valor a número
@@ -611,30 +527,27 @@ export default class ValidarCampos {
 
       // 3. Verifica si es un número válido
       if (isNaN(numeroPasarBoolean)) {
-        return retornarRespuestaFunciones(
-          "error",
-          `Error, campo ${opcion} invalido...`,
-        );
+        return respuestasAlBack("error", `Error, campo ${opcion} invalido`);
       }
 
       // 4. Verifica si es un número entero
       if (!Number.isInteger(numeroPasarBoolean)) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
-          `Error, campo ${opcion} debe ser entero...`,
+          `Error, campo ${opcion} debe ser entero`,
         );
       }
 
       // 5. Verifica si el valor es 1 o 2
       if (!(numero === 1 || numero === 2 || numero === "1" || numero === "2")) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
-          `Error, campo ${opcion} deber ser 1 o 2...`,
+          `Error, campo ${opcion} deber ser 1 o 2`,
         );
       }
 
       // 6. Retorna respuesta exitosa con el valor convertido a booleano
-      return retornarRespuestaFunciones("ok", `Campo ${opcion} valido...`, {
+      return respuestasAlBack("ok", `Campo ${opcion} valido`, {
         boolean: numeroPasarBoolean === 1 ? true : false,
       });
     } catch (error) {
@@ -642,10 +555,7 @@ export default class ValidarCampos {
       console.log(`Error, interno validando ${opcion}: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        `Error, interno validando ${opcion}`,
-      );
+      return respuestasAlBack("error", `Error, interno validando ${opcion}`);
     }
   }
 
@@ -660,15 +570,12 @@ export default class ValidarCampos {
     try {
       // 1. Verifica si el campo está vacío
       if (!fecha) {
-        return retornarRespuestaFunciones("error", "Campo fecha vacio...");
+        return respuestasAlBack("error", "Campo fecha vacio");
       }
 
       // 2. Verifica si el formato cumple con la expresión regular ISO
       if (!fechaFormatoIsoRegex.test(fecha)) {
-        return retornarRespuestaFunciones(
-          "error",
-          "Error formato de fecha invalido...",
-        );
+        return respuestasAlBack("error", "Error formato de fecha invalido");
       }
 
       // 3. Intenta convertir la fecha a objeto Date
@@ -676,7 +583,7 @@ export default class ValidarCampos {
 
       // 4. Si la verificación es incorrecta retorna un error
       if (isNaN(fechaConvertida.getTime())) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
           "Error no se puede interpretar la fecha",
         );
@@ -688,7 +595,7 @@ export default class ValidarCampos {
 
       // 6. Verifica que la fecha no sea futura
       if (fechaConvertida > ahora) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
           "Error fecha no puede pasar el dia actual",
         );
@@ -696,11 +603,11 @@ export default class ValidarCampos {
 
       // 7. Verifica que la fecha no sea demasiado antigua
       if (fechaConvertida < fechaMinima) {
-        return retornarRespuestaFunciones("error", "Error fecha muy antigua");
+        return respuestasAlBack("error", "Error fecha muy antigua");
       }
 
       // 8. Retorna respuesta exitosa con la fecha convertida
-      return retornarRespuestaFunciones("ok", "Campo fecha correcto", {
+      return respuestasAlBack("ok", "Campo fecha correcto", {
         fecha: fechaConvertida,
       });
     } catch (error) {
@@ -708,10 +615,7 @@ export default class ValidarCampos {
       console.log(`Error interno, campo fecha: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error, interno campo fecha...",
-      );
+      return respuestasAlBack("error", "Error, interno campo fecha");
     }
   }
 
@@ -726,7 +630,7 @@ export default class ValidarCampos {
     try {
       // 1. Verifica si el campo está vacío
       if (!modulo) {
-        return retornarRespuestaFunciones("error", "Campo modulo vacio...");
+        return respuestasAlBack("error", "Campo modulo vacio");
       }
 
       // 2. Convierte el valor a número
@@ -734,34 +638,34 @@ export default class ValidarCampos {
 
       // 3. Verifica si es un número válido y positivo
       if (isNaN(moduloNumero) || moduloNumero <= 0) {
-        return retornarRespuestaFunciones("error", "Error, modulo inválido...");
+        return respuestasAlBack("error", "Error, modulo inválido");
       }
 
       // 4. Verifica si es un número entero
       if (!Number.isInteger(moduloNumero)) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
-          "Error, modulo debe ser un número entero...",
+          "Error, modulo debe ser un número entero",
         );
       }
 
       // 5. Verifica si el número mínimo es 1
       if (moduloNumero < 1) {
-        return retornarRespuestaFunciones("error", "Error, minimo 1 modulo...");
+        return respuestasAlBack("error", "Error, minimo 1 modulo");
       }
 
       const MAX_MODULOS = 9;
 
       // 6. Verifica si excede el máximo permitido
       if (moduloNumero > MAX_MODULOS) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
           `Error, maximo ${MAX_MODULOS} módulos`,
         );
       }
 
       // 7. Retorna respuesta exitosa con el número de módulos validado
-      return retornarRespuestaFunciones("ok", "Campo modulo valido...", {
+      return respuestasAlBack("ok", "Campo modulo valido", {
         modulo: moduloNumero,
       });
     } catch (error) {
@@ -769,7 +673,7 @@ export default class ValidarCampos {
       console.log(`Error interno campo modulo: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones("error", "Error interno campo modulo");
+      return respuestasAlBack("error", "Error interno campo modulo");
     }
   }
 
@@ -784,7 +688,7 @@ export default class ValidarCampos {
     try {
       // 1. Verifica si el campo está vacío
       if (!rif) {
-        return retornarRespuestaFunciones("error", "Campo RIF vacío...");
+        return respuestasAlBack("error", "Campo RIF vacío");
       }
 
       // 2. Limpia espacios y convierte a mayúsculas
@@ -792,10 +696,7 @@ export default class ValidarCampos {
 
       // 3. Verifica el formato general con expresión regular
       if (!rifRegex.test(rifLimpio)) {
-        return retornarRespuestaFunciones(
-          "error",
-          "Error formato de RIF inválido...",
-        );
+        return respuestasAlBack("error", "Error formato de RIF inválido");
       }
 
       // 4. Extrae componentes del RIF
@@ -818,16 +719,13 @@ export default class ValidarCampos {
 
       // 6. Verifica si la letra es válida
       if (!valoresLetra[letra]) {
-        return retornarRespuestaFunciones(
-          "error",
-          "Error letra de RIF inválida...",
-        );
+        return respuestasAlBack("error", "Error letra de RIF inválida");
       }
 
       // 7. Calcula el dígito verificador
       const rifNumerico = [
         valoresLetra[letra],
-        ...cuerpo.split("").map(Number),
+        cuerpo.split("").map(Number),
       ];
       const suma = rifNumerico.reduce((acc, num, i) => acc + num * pesos[i], 0);
       const resto = suma % 11;
@@ -835,14 +733,14 @@ export default class ValidarCampos {
 
       // 8. Compara con el dígito original
       if (digitoCalculado !== digitoOriginal) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
-          "Error dígito verificador incorrecto según SENIAT...",
+          "Error dígito verificador incorrecto según SENIAT",
         );
       }
 
       // 9. Retorna respuesta exitosa con el RIF validado
-      return retornarRespuestaFunciones("ok", "RIF válido.", {
+      return respuestasAlBack("ok", "RIF válido.", {
         rif: rifLimpio,
       });
     } catch (error) {
@@ -850,7 +748,7 @@ export default class ValidarCampos {
       console.log(`Error interno campo RIF: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones("error", "Error interno campo RIF");
+      return respuestasAlBack("error", "Error interno campo RIF");
     }
   }
 
@@ -866,10 +764,7 @@ export default class ValidarCampos {
     try {
       // 1. Verifica si el campo está vacío
       if (!rango) {
-        return retornarRespuestaFunciones(
-          "error",
-          `Campo ${detalles} vacio...`,
-        );
+        return respuestasAlBack("error", `Campo ${detalles} vacio`);
       }
 
       // 2. Convierte el valor a número
@@ -877,14 +772,11 @@ export default class ValidarCampos {
 
       // 3. Verifica si es un número válido y positivo
       if (isNaN(numero) || numero <= 0) {
-        return retornarRespuestaFunciones(
-          "error",
-          `Error ${detalles} inválido...`,
-        );
+        return respuestasAlBack("error", `Error ${detalles} inválido`);
       }
 
       // 4. Retorna respuesta exitosa con el rango validado
-      return retornarRespuestaFunciones("ok", `Campo ${detalles} valido...`, {
+      return respuestasAlBack("ok", `Campo ${detalles} valido`, {
         rango: numero,
       });
     } catch (error) {
@@ -892,7 +784,7 @@ export default class ValidarCampos {
       console.log(`Error interno campo rango: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones("error", `Error interno campo rango`);
+      return respuestasAlBack("error", `Error interno campo rango`);
     }
   }
 
@@ -908,7 +800,7 @@ export default class ValidarCampos {
       // 1. Verifica si el campo está vacío
       if (!nivel && nivel !== 0) {
         // Atención: 0 es válido, no debe entrar aquí
-        return retornarRespuestaFunciones("error", "Campo nivel vacio");
+        return respuestasAlBack("error", "Campo nivel vacio");
       }
 
       // 2. Convierte el valor a número
@@ -916,12 +808,12 @@ export default class ValidarCampos {
 
       // 3. Verifica si es un número válido y no negativo
       if (isNaN(nivelNumero) || nivelNumero < 0) {
-        return retornarRespuestaFunciones("error", "Error, nivel inválido");
+        return respuestasAlBack("error", "Error, nivel inválido");
       }
 
       // 4. Verifica si es un número entero
       if (!Number.isInteger(nivelNumero)) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
           "Error, nivel debe ser un número entero",
         );
@@ -931,19 +823,19 @@ export default class ValidarCampos {
 
       // 5. Verifica si excede el máximo permitido
       if (nivelNumero > MAX_NIVELES) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
           `Error, maximo ${MAX_NIVELES} niveles`,
         );
       }
 
       // 6. Retorna respuesta exitosa con el número de niveles validado
-      return retornarRespuestaFunciones("ok", "Campo nivel valido", {
+      return respuestasAlBack("ok", "Campo nivel valido", {
         nivel: nivelNumero,
       });
     } catch (error) {
       console.log(`Error interno campo nivel: ` + error);
-      return retornarRespuestaFunciones("error", "Error interno campo nivel");
+      return respuestasAlBack("error", "Error interno campo nivel");
     }
   }
 
@@ -958,7 +850,7 @@ export default class ValidarCampos {
     try {
       // 1. Verifica si el campo está vacío
       if (!seccion) {
-        return retornarRespuestaFunciones("error", "Campo seccion vacio");
+        return respuestasAlBack("error", "Campo seccion vacio");
       }
 
       // 2. Convierte el valor a número
@@ -966,12 +858,12 @@ export default class ValidarCampos {
 
       // 3. Verifica si es un número válido y positivo
       if (isNaN(seccionNumero) || seccionNumero <= 0) {
-        return retornarRespuestaFunciones("error", "Error, seccion inválida");
+        return respuestasAlBack("error", "Error, seccion inválida");
       }
 
       // 4. Verifica si es un número entero
       if (!Number.isInteger(seccionNumero)) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
           "Error, seccion debe ser un número entero",
         );
@@ -979,21 +871,21 @@ export default class ValidarCampos {
 
       // 5. Verifica si el número mínimo es 1
       if (seccionNumero < 1) {
-        return retornarRespuestaFunciones("error", "Error, minimo 1 seccion");
+        return respuestasAlBack("error", "Error, minimo 1 seccion");
       }
 
       const MAX_SECCIONES = 10;
 
       // 6. Verifica si excede el máximo permitido
       if (seccionNumero > MAX_SECCIONES) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
           `Error, maximo ${MAX_SECCIONES} secciones`,
         );
       }
 
       // 7. Retorna respuesta exitosa con el número de secciones validado
-      return retornarRespuestaFunciones("ok", "Campo seccion valido", {
+      return respuestasAlBack("ok", "Campo seccion valido", {
         seccion: seccionNumero,
       });
     } catch (error) {
@@ -1001,78 +893,32 @@ export default class ValidarCampos {
       console.log(`Error interno campo seccion: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones("error", "Error interno campo seccion");
+      return respuestasAlBack("error", "Error interno campo seccion");
     }
   }
 
   /**
-   Valida todos los campos necesarios para registrar un nuevo usuario. Aplica validaciones
-   individuales para cada campo y retorna una respuesta consolidada.
-   @function validarCamposRegistro
-   @param {string|number} cedula - Cédula del usuario.
-   @param {string} nombre - Nombre del usuario.
-   @param {string} apellido - Apellido del usuario.
-   @param {string} correo - Correo electrónico del usuario.
-   @param {string} claveUno - Contraseña principal.
-   @param {string} claveDos - Confirmación de la contraseña.
-   @param {string|number} id_rol - ID del rol asignado al usuario.
-   @param {string|number} autorizar - Valor que indica si el usuario está autorizado.
-   @returns {Object} Objeto con estado, mensaje y datos validados o error.
-  */
-  static validarCamposRegistro(
-    cedula,
-    nombre,
-    apellido,
-    correo,
-    claveUno,
-    claveDos,
-    id_rol,
-    autorizar,
-  ) {
-    try {
-      // 1. Validaciones individuales
-      const validarCorreo = this.validarCampoCorreo(correo);
-      const validarCedula = this.validarCampoCedula(cedula);
-      const validarNombre = this.validarCampoNombre(nombre);
-      const validarApellido = this.validarCampoNombre(apellido);
-      const validarClave = this.validarCampoClave(claveUno, claveDos);
-      const validarIdRol = this.validarCampoId(id_rol);
-      const validarAutorizar = this.validarCampoNumeroPasarBoolean(
-        autorizar,
-        "autorizar",
-      );
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   */
 
-      // 2. Retorna el primer error encontrado
-      if (validarCedula.status === "error") return validarCedula;
-      if (validarNombre.status === "error") return validarNombre;
-      if (validarApellido.status === "error") return validarApellido;
-      if (validarCorreo.status === "error") return validarCorreo;
-      if (validarClave.status === "error") return validarClave;
-      if (validarIdRol.status === "error") return validarIdRol;
-      if (validarAutorizar.status === "error") return validarAutorizar;
 
-      // 3. Retorna respuesta exitosa con todos los datos validados
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
-        cedula: validarCedula.cedula,
-        nombre: validarNombre.nombre,
-        apellido: validarApellido.nombre,
-        correo: validarCorreo.correo,
-        claveUno: validarClave.claveUno,
-        claveDos: validarClave.claveDos,
-        id_rol: validarIdRol.id,
-        autorizar: validarAutorizar.boolean,
-      });
-    } catch (error) {
-      // 4. Manejo de errores inesperados
-      console.log(`Error interno, campos registro usuario: ` + error);
-
-      // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error, interno campos resgistro usuario",
-      );
-    }
-  }
 
   /**
    Valida los campos necesarios para crear un país. Verifica nombre, capital, descripción y serial.
@@ -1093,7 +939,7 @@ export default class ValidarCampos {
       if (validarSerial.status === "error") return validarSerial;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.nombre,
         capital: validarCapital.nombre,
         descripcion: validarDescripcion.texto,
@@ -1104,7 +950,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos pais: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones("error", "Error interno campos pais");
+      return respuestasAlBack("error", "Error interno campos pais");
     }
   }
 
@@ -1135,7 +981,7 @@ export default class ValidarCampos {
       if (validarIdPais.status === "error") return validarIdPais;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.nombre,
         capital: validarCapital.nombre,
         codigoPostal: validarCodigoPostal.codigoPostal,
@@ -1147,7 +993,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos estado: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones("error", "Error interno campos estado");
+      return respuestasAlBack("error", "Error interno campos estado");
     }
   }
 
@@ -1170,7 +1016,7 @@ export default class ValidarCampos {
       if (validarIdEstado.status === "error") return validarIdEstado;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.nombre,
         descripcion: validarDescripcion.texto,
         id_pais: validarIdPais.id,
@@ -1181,10 +1027,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos municipio: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos municipio...",
-      );
+      return respuestasAlBack("error", "Error interno campos municipio");
     }
   }
 
@@ -1215,7 +1058,7 @@ export default class ValidarCampos {
       if (validarIdMunicipio.status === "error") return validarIdMunicipio;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.nombre,
         descripcion: validarDescripcion.texto,
         id_pais: validarIdPais.id,
@@ -1227,10 +1070,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos parroquia: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos parroquia...",
-      );
+      return respuestasAlBack("error", "Error interno campos parroquia");
     }
   }
 
@@ -1273,7 +1113,7 @@ export default class ValidarCampos {
       if (validarIdParroquia.status === "error") return validarIdParroquia;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.nombre,
         descripcion: validarDescripcion.texto,
         rif: validarRif.rif,
@@ -1289,10 +1129,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos institución: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos institución...",
-      );
+      return respuestasAlBack("error", "Error interno campos institución");
     }
   }
 
@@ -1323,7 +1160,7 @@ export default class ValidarCampos {
       if (validarIdInstitucion.status === "error") return validarIdInstitucion;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.nombre,
         descripcion: validarDescripcion.texto,
         alias: validarAlias.alias,
@@ -1334,10 +1171,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos departamento: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos departamento...",
-      );
+      return respuestasAlBack("error", "Error interno campos departamento");
     }
   }
 
@@ -1353,14 +1187,11 @@ export default class ValidarCampos {
       // 2. Verificar si las validaciones fallan
       if (validarCorreo.status === "error") return validarCorreo;
       if (!clave) {
-        return retornarRespuestaFunciones(
-          "error",
-          "Error, campo clave vacio...",
-        );
+        return respuestasAlBack("error", "Error, campo clave vacio");
       }
 
       // 3. Retornar respuesta exitosa con los datos validados
-      return retornarRespuestaFunciones("ok", "Campos validados", {
+      return respuestasAlBack("ok", "Campos validados", {
         correo: validarCorreo.correo,
         clave: clave,
       });
@@ -1369,10 +1200,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos del login: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos del login",
-      );
+      return respuestasAlBack("error", "Error interno campos del login");
     }
   }
 
@@ -1414,7 +1242,7 @@ export default class ValidarCampos {
       if (validarParroquiaId.status === "error") return validarParroquiaId;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.texto,
         direccion: direccionMinuscula,
         norte: norteMinuscula,
@@ -1431,10 +1259,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos comuna: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos comuna...",
-      );
+      return respuestasAlBack("error", "Error interno campos comuna");
     }
   }
 
@@ -1474,7 +1299,7 @@ export default class ValidarCampos {
       if (validarParroquiaId.status === "error") return validarParroquiaId;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.texto,
         direccion: direccionMinuscula,
         norte: norteMinuscula,
@@ -1490,10 +1315,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos circuito: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos circuito...",
-      );
+      return respuestasAlBack("error", "Error interno campos circuito");
     }
   }
 
@@ -1544,7 +1366,7 @@ export default class ValidarCampos {
 
       // 4. Se comprueba que comunaId y circuitoId no esten vacios los 2
       if (!comunaId && !circuitoId) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
           "Debe especificar un id comuna o un id circuito",
         );
@@ -1565,33 +1387,29 @@ export default class ValidarCampos {
       }
 
       // 7. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones(
-        "ok",
-        "Campos validados correctamente...",
-        {
-          nombre: nombreMinuscula,
-          descripcion: validarDescripcion.texto,
-          direccion: direccionMinuscula,
-          norte: norteMinuscula,
-          sur: surMinuscula,
-          este: esteMinuscula,
-          oeste: oesteMinuscula,
-          punto: puntoMinuscula,
-          rif: rifMinuscula,
-          codigo: codigoMinuscula,
-          id_parroquia: validarIdParroquia.id,
-          id_comuna: id_comuna,
-          id_circuito: id_circuito,
-        },
-      );
+      return respuestasAlBack("ok", "Campos validados correctamente", {
+        nombre: nombreMinuscula,
+        descripcion: validarDescripcion.texto,
+        direccion: direccionMinuscula,
+        norte: norteMinuscula,
+        sur: surMinuscula,
+        este: esteMinuscula,
+        oeste: oesteMinuscula,
+        punto: puntoMinuscula,
+        rif: rifMinuscula,
+        codigo: codigoMinuscula,
+        id_parroquia: validarIdParroquia.id,
+        id_comuna: id_comuna,
+        id_circuito: id_circuito,
+      });
     } catch (error) {
       // 8. Manejo de errores inesperados
       console.error("Error interno campos consejo comunal:", error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
+      return respuestasAlBack(
         "error",
-        "Error interno campos consejo comunal...",
+        "Error interno campos consejo comunal",
       );
     }
   }
@@ -1671,7 +1489,7 @@ export default class ValidarCampos {
         return validarConsejo;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         cedula: validarCedula.cedula,
         edad: validarEdad.edad,
         nombre: validarNombre.nombre,
@@ -1693,10 +1511,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos vocero: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos vocero...",
-      );
+      return respuestasAlBack("error", "Error interno campos vocero");
     }
   }
 
@@ -1720,7 +1535,7 @@ export default class ValidarCampos {
       if (validarDescripcion.status === "error") return validarDescripcion;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.nombre,
         cantidadModulos: validarModulo.modulo,
         descripcion: validarDescripcion.texto,
@@ -1730,10 +1545,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos formación: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos formación...",
-      );
+      return respuestasAlBack("error", "Error interno campos formación");
     }
   }
 
@@ -1754,7 +1566,7 @@ export default class ValidarCampos {
       if (validarDescripcion.status === "error") return validarDescripcion;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.nombre,
         descripcion: validarDescripcion.texto,
       });
@@ -1763,7 +1575,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos cargo: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones("error", "Error interno campos cargo");
+      return respuestasAlBack("error", "Error interno campos cargo");
     }
   }
 
@@ -1799,7 +1611,7 @@ export default class ValidarCampos {
       if (validarSeccion.status === "error") return validarSeccion;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.texto,
         descripcion: validarDescripcion.texto,
         alias: validarAlias.alias,
@@ -1811,10 +1623,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos estante: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos estante",
-      );
+      return respuestasAlBack("error", "Error interno campos estante");
     }
   }
 
@@ -1854,7 +1663,7 @@ export default class ValidarCampos {
       if (validarSeccion.status === "error") return validarSeccion;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados", {
+      return respuestasAlBack("ok", "Campos validados", {
         id_estante: validarIdEstante.id,
         nombre: validarNombre.texto,
         descripcion: validarDescripcion.texto,
@@ -1867,10 +1676,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos carpeta: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos carpeta",
-      );
+      return respuestasAlBack("error", "Error interno campos carpeta");
     }
   }
 
@@ -1897,7 +1703,7 @@ export default class ValidarCampos {
       if (validarAlias.status === "error") return validarAlias;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados", {
+      return respuestasAlBack("ok", "Campos validados", {
         id_carpeta: validarIdCarpeta.id,
         nombre: validarNombre.texto,
         descripcion: validarDescripcion.texto,
@@ -1908,10 +1714,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos archivo: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos archivo",
-      );
+      return respuestasAlBack("error", "Error interno campos archivo");
     }
   }
 
@@ -1955,7 +1758,7 @@ export default class ValidarCampos {
       if (validarPrioridad.status === "error") return validarPrioridad;
 
       // 4. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.nombre,
         descripcion: validarDescripcion.texto,
         rango: validarRango.rango,
@@ -1968,10 +1771,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos novedad: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos novedad",
-      );
+      return respuestasAlBack("error", "Error interno campos novedad");
     }
   }
 
@@ -2014,7 +1814,7 @@ export default class ValidarCampos {
       if (validarIdPais.status === "error") return validarIdPais;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.nombre,
         capital: validarCapital.nombre,
         descripcion: validarDescripcion.texto,
@@ -2025,10 +1825,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar pais: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos editar pais...",
-      );
+      return respuestasAlBack("error", "Error interno campos editar pais");
     }
   }
 
@@ -2068,7 +1865,7 @@ export default class ValidarCampos {
       if (validarIdEstado.status === "error") return validarIdEstado;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.nombre,
         capital: validarCapital.nombre,
         codigoPostal: validarCodigoPostal.codigo,
@@ -2081,10 +1878,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar estado: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos editar estado...",
-      );
+      return respuestasAlBack("error", "Error interno campos editar estado");
     }
   }
 
@@ -2120,7 +1914,7 @@ export default class ValidarCampos {
       if (validarIdMunicipio.status === "error") return validarIdMunicipio;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.nombre,
         descripcion: validarDescripcion.texto,
         id_pais: validarIdPais.id,
@@ -2132,9 +1926,9 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar municipio: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
+      return respuestasAlBack(
         "error",
-        "Error interno campos editar municipio...",
+        "Error interno campos editar municipio",
       );
     }
   }
@@ -2175,7 +1969,7 @@ export default class ValidarCampos {
       if (validarIdParroquia.status === "error") return validarIdParroquia;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.nombre,
         descripcion: validarDescripcion.texto,
         id_pais: validarIdPais.id,
@@ -2188,9 +1982,9 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar parroquia: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
+      return respuestasAlBack(
         "error",
-        "Error interno campos editar parroquia...",
+        "Error interno campos editar parroquia",
       );
     }
   }
@@ -2249,7 +2043,7 @@ export default class ValidarCampos {
       if (validarIdInstitucion.status === "error") return validarIdInstitucion;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.nombre,
         descripcion: validarDescripcion.texto,
         rif: validarRif.rif,
@@ -2266,9 +2060,9 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar institución: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
+      return respuestasAlBack(
         "error",
-        "Error interno campos editar institución...",
+        "Error interno campos editar institución",
       );
     }
   }
@@ -2341,7 +2135,7 @@ export default class ValidarCampos {
       if (validarIdCargo.status === "error") return validarIdCargo;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         cedula: validarCedula.cedula,
         edad: validarEdad.edad,
         nombre: validarNombre.nombre,
@@ -2359,10 +2153,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar vocero: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos editar vocero...",
-      );
+      return respuestasAlBack("error", "Error interno campos editar vocero");
     }
   }
 
@@ -2386,7 +2177,7 @@ export default class ValidarCampos {
       if (validarComuna.status === "error") return validarComuna;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.texto,
         id_parroquia: validarParroquia.id,
         id_comuna: validarComuna.id,
@@ -2396,10 +2187,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar comuna: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos editar comuna...",
-      );
+      return respuestasAlBack("error", "Error interno campos editar comuna");
     }
   }
 
@@ -2423,7 +2211,7 @@ export default class ValidarCampos {
       if (validarCircuito.status === "error") return validarCircuito;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.texto,
         id_parroquia: validarParroquia.id,
         id_circuito: validarCircuito.id,
@@ -2433,9 +2221,9 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar circuito: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
+      return respuestasAlBack(
         "error",
-        "Error interno campos editar circuito...",
+        "Error interno campos editar circuito",
       );
     }
   }
@@ -2471,7 +2259,7 @@ export default class ValidarCampos {
       let idCircuito = null;
 
       if (!id_comuna && !id_circuito) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
           "Debe especificar un id comuna o un id circuito",
         );
@@ -2490,7 +2278,7 @@ export default class ValidarCampos {
       }
 
       // 4. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.texto,
         id_comuna: idComuna,
         id_circuito: idCircuito,
@@ -2500,9 +2288,9 @@ export default class ValidarCampos {
       // 5. Manejo de errores inesperados
       console.log(`Error interno campos editar consejo comunal: ` + error);
 
-      return retornarRespuestaFunciones(
+      return respuestasAlBack(
         "error",
-        "Error interno campos editar consejo comunal...",
+        "Error interno campos editar consejo comunal",
       );
     }
   }
@@ -2541,7 +2329,7 @@ export default class ValidarCampos {
         return validarIdDepartamento;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.nombre,
         descripcion: validarDescripcion.texto,
         id_institucion: validarIdInstitucion.id,
@@ -2552,9 +2340,9 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar departamento: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
+      return respuestasAlBack(
         "error",
-        "Error interno campos editar departamento...",
+        "Error interno campos editar departamento",
       );
     }
   }
@@ -2579,7 +2367,7 @@ export default class ValidarCampos {
       if (validarIdCargo.status === "error") return validarIdCargo;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.nombre,
         descripcion: validarDescripcion.texto,
         id_cargo: validarIdCargo.id,
@@ -2589,10 +2377,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar cargo: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos editar cargo...",
-      );
+      return respuestasAlBack("error", "Error interno campos editar cargo");
     }
   }
 
@@ -2624,7 +2409,7 @@ export default class ValidarCampos {
       if (validarIdFormacion.status === "error") return validarIdFormacion;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.nombre,
         cantidadModulos: validarModulo.modulo,
         descripcion: validarDescripcion.texto,
@@ -2635,9 +2420,9 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar formación: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
+      return respuestasAlBack(
         "error",
-        "Error interno campos editar formación...",
+        "Error interno campos editar formación",
       );
     }
   }
@@ -2674,7 +2459,7 @@ export default class ValidarCampos {
       if (validarSeccion.status === "error") return validarSeccion;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados", {
+      return respuestasAlBack("ok", "Campos validados", {
         id_estante: validarIdEstante.id,
         nombre: validarNombre.texto,
         descripcion: validarDescripcion.texto,
@@ -2686,10 +2471,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar estante: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos editar estante",
-      );
+      return respuestasAlBack("error", "Error interno campos editar estante");
     }
   }
 
@@ -2725,7 +2507,7 @@ export default class ValidarCampos {
       if (validarSeccion.status === "error") return validarSeccion;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados", {
+      return respuestasAlBack("ok", "Campos validados", {
         id_carpeta: validarIdCarpeta.id,
         nombre: validarNombre.texto,
         descripcion: validarDescripcion.texto,
@@ -2737,10 +2519,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar carpeta: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos editar carpeta",
-      );
+      return respuestasAlBack("error", "Error interno campos editar carpeta");
     }
   }
 
@@ -2764,7 +2543,7 @@ export default class ValidarCampos {
       if (validarDescripcion.status === "error") return validarDescripcion;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados", {
+      return respuestasAlBack("ok", "Campos validados", {
         id_archivo: validarIdArchivo.id,
         nombre: validarNombre.texto,
         descripcion: validarDescripcion.texto,
@@ -2774,10 +2553,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar archivo: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos editar archivo",
-      );
+      return respuestasAlBack("error", "Error interno campos editar archivo");
     }
   }
 
@@ -2801,7 +2577,7 @@ export default class ValidarCampos {
       if (validarIdNovedad.status === "error") return validarIdNovedad;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Campos validados...", {
+      return respuestasAlBack("ok", "Campos validados", {
         nombre: validarNombre.nombre,
         descripcion: validarDescripcion.texto,
         id_novedad: validarIdNovedad.id,
@@ -2811,10 +2587,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar novedad: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return retornarRespuestaFunciones(
-        "error",
-        "Error interno campos editar novedad",
-      );
+      return respuestasAlBack("error", "Error interno campos editar novedad");
     }
   }
 
@@ -2856,7 +2629,7 @@ export default class ValidarCampos {
       if (validarDescripcion.status === "error") return validarDescripcion;
 
       // 3. Consolidar datos validados y retornar respuesta exitosa
-      return retornarRespuestaFunciones("ok", "Validacion correcta", {
+      return respuestasAlBack("ok", "Validacion correcta", {
         modulo: validarModulo.modulo,
         fecha: validarFecha.fecha,
         id_asistencia: validarIdAsistencia.id,
@@ -2868,7 +2641,7 @@ export default class ValidarCampos {
       console.log(`Error, interno al validar campos asistencia: ` + error);
 
       // Retorna una respuesta del error inesperado.
-      return retornarRespuestaFunciones(
+      return respuestasAlBack(
         "error",
         "Error, interno al validar campos asistencia",
       );
@@ -2881,12 +2654,12 @@ export default class ValidarCampos {
     try {
       // 1. Verifica si el campo está vacío
       if (!alias) {
-        return retornarRespuestaFunciones("error", "Error, campo alias vacío");
+        return respuestasAlBack("error", "Error, campo alias vacío");
       }
 
       // 2. Expresión regular para validar el formato
       if (!indice ? !estanteRegex.test(alias) : !carpetaRegex.test(alias)) {
-        return retornarRespuestaFunciones(
+        return respuestasAlBack(
           "error",
           "Error, formato de alias inválido",
         );
@@ -2896,13 +2669,13 @@ export default class ValidarCampos {
       const aliasNormalizado = alias.toLowerCase();
 
       // 4. Retorna respuesta exitosa con el alias validado
-      return retornarRespuestaFunciones("ok", "Campo alias correcto", {
+      return respuestasAlBack("ok", "Campo alias correcto", {
         alias: aliasNormalizado,
       });
     } catch (error) {
       // 5. Manejo de errores inesperados
       console.log(`Error interno campo alias: ` + error);
-      return retornarRespuestaFunciones("error", "Error interno campo alias");
+      return respuestasAlBack("error", "Error interno campo alias");
     }
   }
 */

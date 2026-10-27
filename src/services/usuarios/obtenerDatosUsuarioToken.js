@@ -4,7 +4,7 @@
  @module services/usuarios/obtenerDatosUsuarioToken
 */
 
-import prisma from "@/libs/prisma"; // Cliente Prisma para interactuar con la base de datos
+import { prisma } from "@/config/prisma"; // Cliente Prisma para interactuar con la base de datos
 import respuestasAlBack from "@/libs/respuestasAlBack"; // Utilidad para generar respuestas estandarizadas
 import obtenerCorreoToken from "@/services/usuarios/obtenerCorreoToken"; // Función para extraer el correo y rol del usuario desde el token
 
@@ -45,12 +45,12 @@ export default async function obtenerDatosUsuarioToken() {
       cedula: datosUsuario.cedula,
       nombre: datosUsuario.nombre,
       correo: validaciones.correo,
-      id_usuario: datosUsuario.id,
-      id_rol: validaciones.id_rol,
+      usuarioId: datosUsuario.id,
+      rolId: validaciones.rolId,
     });
   } catch (error) {
     // 6. Manejo de errores inesperados.
-    console.log("Error interno obtener datos usuario: " + error);
+    console.log("Error interno obtener datos usuario:", error);
 
     // Retorna una respuesta del error inesperado
     return respuestasAlBack("error", "Error interno obtener datos usuario");

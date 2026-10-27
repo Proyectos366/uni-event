@@ -6,7 +6,7 @@
 
 import { cookies } from "next/headers"; // API para acceder a las cookies en el entorno Next.js
 import AuthTokens from "@/libs/AuthTokens"; // Utilidad para cifrar y descifrar tokens de autenticación
-import nombreToken from "@/libs/nombreToken"; // Nombre clave del token almacenado en cookies
+import nombreToken from "@/constants/nombreToken"; // Nombre clave del token almacenado en cookies
 import respuestasAlBack from "@/libs/respuestasAlBack"; // Utilidad para generar respuestas estandarizadas
 
 /**

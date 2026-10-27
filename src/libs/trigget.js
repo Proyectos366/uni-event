@@ -5,8 +5,8 @@
  obtener la IP desde la solicitud. @module utils/registrarEvento
 */
 
+import { prisma } from "@/config/prisma"; // Cliente Prisma para interactuar con la base de datos
 import obtenerIp from "@/utils/obtenerIp"; // Utilidad para extraer la IP desde la solicitud HTTP
-import prisma from "./prisma"; // Cliente Prisma para interactuar con la base de datos
 
 /**
  Registra un evento directamente en la base de datos. Se utiliza internamente por funciones más
@@ -31,7 +31,7 @@ async function registrarEvento(
   ip = "",
   descripcion = "",
   datosAntes = null,
-  datosDespues = null
+  datosDespues = null,
 ) {
   try {
     await prisma.eventos.create({
@@ -77,7 +77,7 @@ export default async function registrarEventoSeguro(
     descripcion = "Evento no especificado",
     datosAntes = null,
     datosDespues = null,
-  }
+  },
 ) {
   try {
     // 1. Obtiene la IP desde la solicitud
@@ -92,7 +92,7 @@ export default async function registrarEventoSeguro(
       ip,
       descripcion,
       datosAntes,
-      datosDespues
+      datosDespues,
     );
   } catch (error) {
     // 3. Manejo de errores inesperados durante el registro del evento

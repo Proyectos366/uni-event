@@ -2,19 +2,23 @@
   @fileoverview Controlador de API para el inicio de sesión de usuarios. Este archivo maneja la
   lógica para autenticar a un usuario a través de una solicitud POST y el archivo tambien contiene
   una peticion GET para el cierre de sesion. Utiliza Prisma para la interacción con la base de datos,
-  un servicio de validación para asegurar la validez de los datos, y un sistema de registro de eventos
-  para la auditoría.@module
+  un servicio de validación para asegurar la validez de los datos, y un sistema de registro de
+  eventos para la auditoría.@module
 */
 
 import { NextResponse } from "next/server"; // Importa la respuesta para Next.js.
 import { cookies } from "next/headers"; // Módulo para gestionar cookies en las solicitudes.
-import { generarRespuesta } from "@/utils/respuestasAlFront"; // Utilidad para estandarizar las respuestas de la API.
-import nombreToken from "@/utils/nombreToken"; // Utilidad para obtener el nombre del token de autenticación.
-import validarInicioSesion from "@/services/validarInicioSesion"; // Servicio para validar el inicio de sesión del usuario.
+import { respuestasAlFront } from "@/libs/respuestasAlFront"; // Utilidad para estandarizar las respuestas de la API.
+import nombreToken from "@/constants/nombreToken"; // Utilidad para obtener el nombre del token de autenticación.
+import validarInicioSesion from "@/services/login/validarInicioSesion"; // Servicio para validar el inicio de sesión del usuario.
 import registrarEventoSeguro from "@/libs/trigget"; // Función para registrar eventos de seguridad.
 
 /**
-Maneja las solicitudes HTTP POST para el inicio de sesión de usuarios.@async@function POST@param {Request} request - Objeto de la solicitud que contiene los credenciales del usuario.@returns {Promise<object>} - Una respuesta HTTP en formato JSON que indica el resultado de la operación (exito o error).
+  Maneja las solicitudes HTTP POST para el inicio de sesión de usuarios.
+  @async
+  @function POST
+  @param {Request} request - Objeto de la solicitud que contiene los credenciales del usuario.
+  @returns {Promise<object>} - Una respuesta HTTP en formato JSON que indica el resultado de la operación (exito o error).
 */
 export async function POST(request) {
   try {
@@ -36,7 +40,7 @@ export async function POST(request) {
         datosDespues: validaciones,
       });
 
-      return generarRespuesta(
+      return respuestasAlFront(
         validaciones.status,
         validaciones.message,
         {},
@@ -58,7 +62,7 @@ export async function POST(request) {
     // 5. Crea una respuesta JSON con el token y redirección
     const response = NextResponse.json({
       status: "ok",
-      message: "Iniciando sesión...",
+      message: "Iniciando sesión",
       token: validaciones.token,
       redirect: validaciones.redirect,
     });
@@ -72,7 +76,7 @@ export async function POST(request) {
     return response; // Retorna la respuesta configurada
   } catch (error) {
     // 7. Manejo de errores inesperados
-    console.error(`Error interno al iniciar sesion: ` + error);
+    console.log(`Error interno al iniciar sesion:`, error);
 
     await registrarEventoSeguro(request, {
       tabla: "usuario",
@@ -85,7 +89,7 @@ export async function POST(request) {
     });
 
     // Retorna una respuesta de error con un código de estado 500 (Internal Server Error)
-    return generarRespuesta(
+    return respuestasAlFront(
       "error",
       "Error interno al iniciar sesion",
       {},
@@ -95,12 +99,12 @@ export async function POST(request) {
 }
 
 /**
-@fileoverview Controlador de API para cerrar sesión de un usuario. Este archivo maneja la lógica
-para cerrar la sesión de un usuario a través de una solicitud GET. Utiliza Prisma para la
-interacción con la base de datos, un sistema de registro de eventos para auditoría y validación
-de tokens para asegurar la autenticidad de la sesión.@module
+  @fileoverview Controlador de API para cerrar sesión de un usuario. Este archivo maneja la lógica
+  para cerrar la sesión de un usuario a través de una solicitud GET. Utiliza Prisma para la
+  interacción con la base de datos, un sistema de registro de eventos para auditoría y validación
+  de tokens para asegurar la autenticidad de la sesión.@module
 */
-export async function GET(request) {
+export async function GET() {
   try {
     // 1. Recupera las cookies y el token de autenticación
     const cookieStore = await cookies(); // Esperar la llamada a cookies()
@@ -108,7 +112,7 @@ export async function GET(request) {
     // 7. Elimina el token de las cookies
     cookieStore.delete(nombreToken);
 
-    return generarRespuesta(
+    return respuestasAlFront(
       "ok",
       "Cerrando sesion",
       {
@@ -121,6 +125,6 @@ export async function GET(request) {
     console.error("Error interno cerrando sesión:", error);
 
     // Retorna una respuesta de error con un código de estado 500 (Internal Server Error)
-    return generarRespuesta("error", "Error interno cerrando sesión", {}, 500);
+    return respuestasAlFront("error", "Error interno cerrando sesión", {}, 500);
   }
 }

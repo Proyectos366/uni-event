@@ -16,7 +16,7 @@ import { NextResponse } from "next/server"; // Utilidad de Next.js para construi
  @param {number} statusCode - Código de estado HTTP (ej. 200, 400, 500).
  @returns {NextResponse} Respuesta HTTP en formato JSON.
 */
-export function generarRespuesta(status, message, data = {}, statusCode) {
+export function respuestasAlFront(status, message, data = {}, statusCode) {
   return NextResponse.json(
     {
       status: status,

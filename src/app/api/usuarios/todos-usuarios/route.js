@@ -3,11 +3,11 @@
  Este endpoint valida el acceso, realiza la consulta en la base de datos, excluye ciertos
  correos específicos y retorna la lista de usuarios ordenados por nombre. Utiliza Prisma como
  ORM y servicios personalizados para validación y respuesta estandarizada.
- @module api/usuarios/consultarTodos
+ @module api/usuarios/consultarTodosUsuarios
 */
 
-import prisma from "@/libs/prisma"; // Cliente Prisma para interactuar con la base de datos
-import { generarRespuesta } from "@/utils/respuestasAlFront"; // Utilidad para generar respuestas HTTP estandarizadas
+import { prisma } from "@/config/prisma"; // Cliente Prisma para interactuar con la base de datos
+import { respuestasAlFront } from "@/libs/respuestasAlFront"; // Utilidad para generar respuestas HTTP estandarizadas
 import validarConsultarTodosUsuarios from "@/services/usuarios/validarConsultarTodosUsuarios"; // Servicio para validar la consulta
 
 /**
@@ -26,7 +26,7 @@ export async function GET() {
 
     // 2. Si la validación falla, retorna una respuesta de error
     if (validaciones.status === "error") {
-      return generarRespuesta(
+      return respuestasAlFront(
         validaciones.status,
         validaciones.message,
         {},
@@ -39,7 +39,7 @@ export async function GET() {
       where: {
         correo: {
           not: {
-            in: [validaciones.correo, "caslerojperazab@gmail.com"],
+            in: [validaciones.correo, "carlosjperazab@gmail.com"],
           },
         },
       },
@@ -67,7 +67,7 @@ export async function GET() {
 
     // 4. Verifica si se obtuvieron resultados válidos
     if (!todosUsuarios) {
-      return generarRespuesta(
+      return respuestasAlFrontBinaria(
         "error",
         "Error, al consultar todos usuarios",
         {},
@@ -76,7 +76,7 @@ export async function GET() {
     }
 
     // 5. Retorna la lista de usuarios en una respuesta exitosa
-    return generarRespuesta(
+    return respuestasAlFrontBinaria(
       "ok",
       "Usuarios encontrados",
       { usuarios: todosUsuarios },
@@ -87,6 +87,11 @@ export async function GET() {
     console.log(`Error interno, todos usuarios:`, error);
 
     // Retorna una respuesta de error con un código de estado 500 (Internal Server Error)
-    return generarRespuesta("error", "Error interno todos usuarios", {}, 500);
+    return respuestasAlFrontBinaria(
+      "error",
+      "Error interno todos usuarios",
+      {},
+      500,
+    );
   }
 }
