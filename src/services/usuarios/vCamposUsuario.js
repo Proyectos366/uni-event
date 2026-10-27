@@ -55,6 +55,10 @@ export default function validarCamposRegistro(datos) {
       estatus,
       "estatus",
     );
+    const validareNacionalidad = ValidarCampos.validarCampoNumeroPasarBoolean(
+      nacionalidad,
+      "nacionalidad",
+    );
 
     // 2. Retorna el primer error encontrado
     if (validarCedula.status === "error") return validarCedula;
@@ -67,6 +71,7 @@ export default function validarCamposRegistro(datos) {
     if (validarClave.status === "error") return validarClave;
     if (validarIdRol.status === "error") return validarIdRol;
     if (validareStatus.status === "error") return validareStatus;
+    if (validareNacionalidad.status === "error") return validareNacionalidad;
 
     // 3. Retorna respuesta exitosa con todos los datos validados
     return respuestasAlBack("ok", "Campos validados...", {
