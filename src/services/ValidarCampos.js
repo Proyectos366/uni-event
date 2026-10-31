@@ -6,18 +6,17 @@
 */
 
 import respuestasAlBack from "@/libs/respuestasAlBack"; // Utilidad para estructurar respuestas internas
+
 import { quitarCaracteres } from "@/utils/quitarCaracteres"; // Función para limpiar caracteres no deseados
+import validarFechaIsoFlexibleZod from "@/zod/fechaIsoFlexibleZod";
+import validarTelefonoZod from "@/zod/telefonoZod";
 
 import { cedulaRegex } from "@/utils/regex/cedulaRegex";
-import { phoneRegex } from "@/utils/regex/telefonoRegex";
 import { emailRegex } from "@/utils/regex/correoRegex";
 import { claveRegex } from "@/utils/regex/claveRegex";
 import { rifRegex } from "@/utils/regex/rifRegex";
 import { textRegex } from "@/utils/regex/textRegex";
 import { fechaFormatoIsoRegex } from "@/utils/regex/fechaFormatoIsoRegex";
-import { estanteRegex } from "@/utils/regex/nombreEstanteRegex";
-import { carpetaRegex } from "@/utils/regex/nombreCarpetaRegex";
-import { regexGeneral } from "@/utils/regex/regexGeneral";
 
 /**
  Clase que agrupa métodos estáticos para validar campos individuales. Cada método retorna una
@@ -41,10 +40,7 @@ export default class ValidarCampos {
 
       // 2. Valida el formato del correo usando expresión regular
       if (!emailRegex.test(correo)) {
-        return respuestasAlBack(
-          "error",
-          "Error, formato de correo invalido",
-        );
+        return respuestasAlBack("error", "Error, formato de correo invalido");
       }
 
       // 3. Normaliza el correo a minúsculas
@@ -79,10 +75,7 @@ export default class ValidarCampos {
 
       // 2. Valida el formato del nombre usando expresión regular
       if (!textRegex.test(nombre)) {
-        return respuestasAlBack(
-          "error",
-          "Error, formato de nombre invalido",
-        );
+        return respuestasAlBack("error", "Error, formato de nombre invalido");
       }
 
       // 3. Normaliza el nombre a minúsculas
@@ -117,10 +110,7 @@ export default class ValidarCampos {
 
       // 2. Valida el formato del apellido usando expresión regular
       if (!textRegex.test(apellido)) {
-        return respuestasAlBack(
-          "error",
-          "Error, formato de apellido invalido",
-        );
+        return respuestasAlBack("error", "Error, formato de apellido invalido");
       }
 
       // 3. Normaliza el apellido a minúsculas
@@ -299,36 +289,61 @@ export default class ValidarCampos {
   }
 
   /**
-   Valida el campo de número telefónico venezolano. Limpia caracteres no numéricos y verifica que
-   cumpla con el formato de 11 dígitos.
-   @function validarCampoTelefono
-   @param {string|number} telefono - Número telefónico ingresado por el usuario.
-   @returns {Object} Objeto con estado, mensaje y teléfono validado.
+   Valida un campo de fecha usando el esquema flexible de Zod.
+   Acepta formatos ISO 8601, YYYY-MM-DD y DD-MM-YYYY (con guiones o barras).
+   Verifica que sea interpretable, no sea futura y no sea anterior a 1900.
+   @function validarCampoFechaIsoFlexible
+   @param {string} fecha - Fecha ingresada por el usuario en formato flexible.
+   @returns {Object} Objeto con estado, mensaje y la fecha convertida a objeto Date (UTC).
   */
-  static validarCampoTelefono(telefono) {
+  static validarCampoFechaIsoFlexible(fecha) {
     try {
-      // 1. Verifica si el campo está vacío
-      if (!telefono) {
-        return respuestasAlBack("error", "Campo teléfono vacio");
+      // 1. Ejecuta la validación de Zod usando safeParse
+      const resultado = validarFechaIsoFlexibleZod.safeParse(fecha);
+
+      // 2. Si la validación falla, retorna el mensaje de error definido en el esquema Zod
+      if (!resultado.success) {
+        const mensajeError = resultado.error.issues[0].message;
+        return respuestasAlBack("error", mensajeError);
       }
 
-      // 2. Elimina caracteres no numéricos
-      const telefonoLimpio = quitarCaracteres(telefono);
-
-      // 3. Verifica formato con expresión regular
-      if (!phoneRegex.test(telefonoLimpio)) {
-        return respuestasAlBack("error", "Error, formato teléfono invalido");
-      }
-
-      // 4. Retorna respuesta exitosa con el teléfono validado
-      return respuestasAlBack("ok", "Campo teléfono valido", {
-        telefono: telefonoLimpio,
+      // 3. Retorna respuesta exitosa con el objeto Date transformado
+      return respuestasAlBack("ok", "Campo fecha correcto", {
+        fecha: resultado.data,
       });
     } catch (error) {
-      // 5. Manejo de errores inesperados
-      console.log(`Error interno, campo teléfono: ` + error);
+      // 4. Manejo de errores inesperados
+      console.log(`Error interno, campo fecha:`, error);
 
-      // Retorna una respuesta del error inesperado
+      return respuestasAlBack("error", "Error, interno campo fecha");
+    }
+  }
+
+  /**
+  Valida el campo de número telefónico internacional o nacional usando Zod.
+  @function validarCampoTelefono
+  @param {string} telefono - Número telefónico ingresado por el usuario.
+  @returns {Object} Objeto con estado, mensaje y teléfono validado.
+ */
+  static validarCampoTelefono(telefono) {
+    try {
+      // 1. Ejecuta la validación de Zod usando safeParse
+      const resultado = validarTelefonoZod.safeParse(telefono);
+
+      // 2. Si la validación falla, retorna el mensaje de error de Zod
+      if (!resultado.success) {
+        const mensajeError = resultado.error.issues[0].message;
+        return respuestasAlBack("error", mensajeError);
+      }
+
+      // 3. Retorna respuesta exitosa con el teléfono sanitizado y en formato E.164
+      return respuestasAlBack("ok", "Campo teléfono valido", {
+        telefono: resultado.data,
+      });
+    } catch (error) {
+      // 4. Manejo de errores inesperados
+      console.log(`Error interno, campo teléfono:`, error);
+
       return respuestasAlBack("error", "Error interno, campo teléfono");
     }
   }
@@ -434,10 +449,7 @@ export default class ValidarCampos {
 
       // 2. Verifica si el campo de confirmación está vacío
       if (!claveDos) {
-        return respuestasAlBack(
-          "error",
-          "Error campo confirmar clave vacio",
-        );
+        return respuestasAlBack("error", "Error campo confirmar clave vacio");
       }
 
       // 3. Verifica si ambas contraseñas coinciden
@@ -723,10 +735,7 @@ export default class ValidarCampos {
       }
 
       // 7. Calcula el dígito verificador
-      const rifNumerico = [
-        valoresLetra[letra],
-        cuerpo.split("").map(Number),
-      ];
+      const rifNumerico = [valoresLetra[letra], cuerpo.split("").map(Number)];
       const suma = rifNumerico.reduce((acc, num, i) => acc + num * pesos[i], 0);
       const resto = suma % 11;
       const digitoCalculado = resto < 2 ? resto : 11 - resto;
@@ -917,8 +926,6 @@ export default class ValidarCampos {
    *
    *
    */
-
-
 
   /**
    Valida los campos necesarios para crear un país. Verifica nombre, capital, descripción y serial.
@@ -1407,10 +1414,7 @@ export default class ValidarCampos {
       console.error("Error interno campos consejo comunal:", error);
 
       // Retorna una respuesta del error inesperado
-      return respuestasAlBack(
-        "error",
-        "Error interno campos consejo comunal",
-      );
+      return respuestasAlBack("error", "Error interno campos consejo comunal");
     }
   }
 
@@ -1926,10 +1930,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar municipio: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return respuestasAlBack(
-        "error",
-        "Error interno campos editar municipio",
-      );
+      return respuestasAlBack("error", "Error interno campos editar municipio");
     }
   }
 
@@ -1982,10 +1983,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar parroquia: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return respuestasAlBack(
-        "error",
-        "Error interno campos editar parroquia",
-      );
+      return respuestasAlBack("error", "Error interno campos editar parroquia");
     }
   }
 
@@ -2221,10 +2219,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar circuito: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return respuestasAlBack(
-        "error",
-        "Error interno campos editar circuito",
-      );
+      return respuestasAlBack("error", "Error interno campos editar circuito");
     }
   }
 
@@ -2420,10 +2415,7 @@ export default class ValidarCampos {
       console.log(`Error interno campos editar formación: ` + error);
 
       // Retorna una respuesta del error inesperado
-      return respuestasAlBack(
-        "error",
-        "Error interno campos editar formación",
-      );
+      return respuestasAlBack("error", "Error interno campos editar formación");
     }
   }
 
@@ -2648,34 +2640,3 @@ export default class ValidarCampos {
     }
   }
 }
-
-/** 
-  static validarCampoAlias(alias, indice) {
-    try {
-      // 1. Verifica si el campo está vacío
-      if (!alias) {
-        return respuestasAlBack("error", "Error, campo alias vacío");
-      }
-
-      // 2. Expresión regular para validar el formato
-      if (!indice ? !estanteRegex.test(alias) : !carpetaRegex.test(alias)) {
-        return respuestasAlBack(
-          "error",
-          "Error, formato de alias inválido",
-        );
-      }
-
-      // 3. Normaliza el alias (opcional - puedes elegir qué formato prefieres)
-      const aliasNormalizado = alias.toLowerCase();
-
-      // 4. Retorna respuesta exitosa con el alias validado
-      return respuestasAlBack("ok", "Campo alias correcto", {
-        alias: aliasNormalizado,
-      });
-    } catch (error) {
-      // 5. Manejo de errores inesperados
-      console.log(`Error interno campo alias: ` + error);
-      return respuestasAlBack("error", "Error interno campo alias");
-    }
-  }
-*/
