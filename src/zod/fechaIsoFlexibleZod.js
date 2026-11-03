@@ -1,5 +1,5 @@
-import { normalizarFormatoIso } from "#utils/normalizarFormatoIso";
-import { fechaFlexibleRegex } from "#utils/regex/fechaFlexibleRegex";
+import { normalizarFormatoIso } from "@/utils/normalizarFormatoIso";
+import { fechaFlexibleRegex } from "@/utils/regex/fechaFlexibleRegex";
 import { z } from "zod";
 
 const fechaMinima = new Date("1900-01-01T00:00:00.000Z");

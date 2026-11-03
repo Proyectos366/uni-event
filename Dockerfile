@@ -2,7 +2,7 @@ FROM node:22-alpine AS base
 
 WORKDIR /app
 
-RUN apk add --no-cache libc6-compat openssl \
+RUN apk add --no-cache libc6-compat openssl ca-certificates \
     && addgroup --system --gid 1001 nextjs \
     && adduser --system --uid 1001 --ingroup nextjs nextjs \
     && mkdir -p /data \
@@ -24,9 +24,15 @@ USER nextjs
 
 CMD ["npm", "run", "db:migrate:deploy"]
 
-FROM dependencies AS builder
+FROM base AS builder
 
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY package.json package-lock.json ./
 COPY . .
+
+ENV NODE_ENV=production
+ENV NODE_TLS_REJECT_UNAUTHORIZED=0
+
 RUN npm run build
 
 FROM base AS runner
