@@ -1,5 +1,5 @@
 import React from 'react';
-import InputField from '../../../components/InputField';
+import InputField from '../InputField';
 
 const StepPerfil = ({ formData, updateFormData }) => {
   const handleChange = (e) => {

@@ -3,7 +3,8 @@ import Button from '../../components/Button';
 import Checkbox from '../../components/Checkbox';
 import InputEmail from '../../components/input/types/InputEmail';
 import InputPassword from '../../components/input/types/InputPassword';
-import imagoTipo from '../../assets/ImagoTipo.png';
+import ImagoTipo from '@/components/login/ImagoTipo';
+
 
 const LoginView = ({ onBack, onRecover, onRegister, onLoginSuccess }) => {
   const [rememberMe, setRememberMe] = useState(false);
@@ -24,7 +25,7 @@ const LoginView = ({ onBack, onRecover, onRegister, onLoginSuccess }) => {
     <div className="min-h-[70vh] flex items-center justify-center bg-gradient-to-br from-teal-400 to-teal-600 py-20 px-6">
       <div className="bg-unievents-bg p-8 rounded-2xl shadow-xl w-full max-w-md text-center">
         {/* Logotipo Imagotipo */}
-        <img src={imagoTipo} alt="UniEvent Full Logo" className="w-40 mx-auto mb-2" />
+       <ImagoTipo />
 
         {/* Título y retorno al inicio */}
         <h2 className="text-3xl font-bold text-unievents-dark mb-10 cursor-pointer" onClick={onBack}>Ingresa a tu cuenta</h2>

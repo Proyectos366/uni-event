@@ -1,6 +1,6 @@
 import React from 'react';
-import InputEmail from '../../../components/input/types/InputEmail';
-import InputPassword from '../../../components/input/types/InputPassword';
+import InputEmail from '../input/types/InputEmail';
+import InputPassword from '../input/types/InputPassword';
 
 const StepDatos = ({ formData, updateFormData }) => {
   const handleChange = (e) => {
