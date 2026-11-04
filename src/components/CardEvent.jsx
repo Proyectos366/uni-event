@@ -1,5 +1,4 @@
-import React from 'react';
-import Button from './Button';
+import Button from "@/components/botones/Button";
 
 /**
  * Componente CardEvent para renderizar cursos y eventos en cuadrícula.
@@ -73,9 +72,8 @@ const CardEvent = ({
               </span>
             )
           )}
-          <Button 
+          <Button
             onClick={onVerMas}
-            variant="secondary" 
             className="!px-4 !py-1 text-sm border-unievents-teal text-unievents-teal hover:bg-unievents-teal hover:text-white"
           >
             Ver más
