@@ -1,7 +1,5 @@
-"use client";
-
-import React, { useState } from 'react';
-const isoTipo = "/icons/icon.svg";
+import React, { useState, useEffect } from 'react';
+import isoTipo from '../assets/IsoTipo.png';
 
 /**
  * Componente global de barra lateral (Sidebar) para el panel del estudiante.
@@ -13,9 +11,12 @@ const isoTipo = "/icons/icon.svg";
 const Sidebar = ({ activeTab, onTabChange, onLogout, isMobileOpen, onMobileClose }) => {
   const [isPerfilExpanded, setIsPerfilExpanded] = useState(false);
 
-  // Se muestra expandido si el usuario lo abrió o si la pestaña activa pertenece al perfil
-  const perfilExpanded =
-    isPerfilExpanded || ['perfil-datos', 'mis-actividades', 'certificados'].includes(activeTab);
+  // Auto-expandir el menú si la pestaña activa pertenece al perfil
+  useEffect(() => {
+    if (['perfil-datos', 'mis-actividades', 'certificados'].includes(activeTab)) {
+      setIsPerfilExpanded(true);
+    }
+  }, [activeTab]);
 
   // Enlaces de navegación primarios del Sidebar (Estadísticas removido)
   const mainMenuItems = [
@@ -149,7 +150,7 @@ const Sidebar = ({ activeTab, onTabChange, onLogout, isMobileOpen, onMobileClose
           {/* Acordeón de Mi Perfil */}
           <div className="flex flex-col">
             <button
-              onClick={() => setIsPerfilExpanded(!perfilExpanded)}
+              onClick={() => setIsPerfilExpanded(!isPerfilExpanded)}
               className={`flex items-center justify-between gap-3 px-4 py-3.5 rounded-xl font-bold transition-all ${
                 ['perfil-datos', 'mis-actividades', 'certificados'].includes(activeTab)
                   ? 'bg-teal-700/30 text-white shadow-sm' 
@@ -165,7 +166,7 @@ const Sidebar = ({ activeTab, onTabChange, onLogout, isMobileOpen, onMobileClose
               
               {/* Indicador de colapso con rotación de 180 grados animada */}
               <svg 
-                className={`w-4 h-4 transition-transform duration-300 ${perfilExpanded ? 'rotate-180' : ''}`} 
+                className={`w-4 h-4 transition-transform duration-300 ${isPerfilExpanded ? 'rotate-180' : ''}`} 
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"
@@ -175,7 +176,7 @@ const Sidebar = ({ activeTab, onTabChange, onLogout, isMobileOpen, onMobileClose
             </button>
 
             {/* Sub-Menú animado en cascada descendente */}
-            {perfilExpanded && (
+            {isPerfilExpanded && (
               <div className="flex flex-col pl-7 mt-1.5 gap-1.5 animate-slide-down-sub overflow-hidden">
                 {perfilSubItems.map((sub) => {
                   const isSubActive = activeTab === sub.id;

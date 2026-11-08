@@ -1,10 +1,8 @@
-"use client";
-
 import React, { useState } from 'react';
 import Input from '../../../components/input/Input';
 import InputEmail from '../../../components/input/types/InputEmail';
 import InputPassword from '../../../components/input/types/InputPassword';
-import Button from '@/components/botones/Button';
+import Button from '../../../components/Button';
 
 /**
  * Vista de Mis Datos (PerfilDatos.jsx).

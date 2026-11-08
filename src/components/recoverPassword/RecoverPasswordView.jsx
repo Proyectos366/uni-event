@@ -1,7 +1,5 @@
-"use client";
-
-import Button from '@/components/botones/Button';
-const imagoTipo = "/icons/icon.svg";
+import Button from '../../components/Button';
+import imagoTipo from '../../assets/ImagoTipo.png';
 
 const RecoverPasswordView = ({ onBack }) => {
   return (

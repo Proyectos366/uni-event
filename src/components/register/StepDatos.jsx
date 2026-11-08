@@ -1,51 +1,25 @@
-import InputEmail from "../input/types/InputEmail";
-import InputPassword from "../input/types/InputPassword";
-import Ico from "./Ico";
-import RequisitosClave from "./RequisitosClave";
+import React from 'react';
+import InputEmail from '../input/types/InputEmail';
+import InputPassword from '../input/types/InputPassword';
 
-// Paso 1: credenciales (correo, claveUno, claveDos). Reglas iguales a las del back.
-export default function StepDatos({ formData, updateFormData, errors = {} }) {
-  const cambiar = (e) => updateFormData({ [e.target.name]: e.target.value.trim() });
+const StepDatos = ({ formData, updateFormData }) => {
+  const handleChange = (e) => {
+    updateFormData({ [e.target.name]: e.target.value });
+  };
 
   return (
-    <div className="flex flex-col gap-5">
-      <div>
-        <h3 className="text-xl font-bold text-unievents-dark">Datos de acceso</h3>
-        <p className="text-sm text-gray-500">Con estos datos iniciarás sesión.</p>
-      </div>
-
+    <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-right-4 duration-300">
+      <h3 className="text-xl font-bold text-unievents-dark mb-2">Datos de acceso</h3>
       <InputEmail
-        name="correo"
-        value={formData.correo}
-        onChange={cambiar}
-        icono={<Ico nombre="correo" />}
-        error={errors.correo}
-        autoComplete="email"
+        value={formData.email}
+        onChange={handleChange}
       />
-
-      <div className="flex flex-col gap-3">
-        <InputPassword
-          name="claveUno"
-          value={formData.claveUno}
-          onChange={cambiar}
-          icono={<Ico nombre="clave" />}
-          error={errors.claveUno}
-          maxLength={16}
-          autoComplete="new-password"
-        />
-        <RequisitosClave clave={formData.claveUno} />
-      </div>
-
       <InputPassword
-        name="claveDos"
-        label="Confirmar contraseña"
-        value={formData.claveDos}
-        onChange={cambiar}
-        icono={<Ico nombre="clave" />}
-        error={errors.claveDos}
-        maxLength={16}
-        autoComplete="new-password"
+        value={formData.password}
+        onChange={handleChange}
       />
     </div>
   );
-}
+};
+
+export default StepDatos;

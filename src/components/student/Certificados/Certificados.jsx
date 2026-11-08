@@ -1,9 +1,7 @@
-"use client";
-
 import React, { useState } from 'react';
 import jsPDF from 'jspdf';
-import Button from '@/components/botones/Button';
-const templateCertificado = "/assets/Certificado UniEvent.jpg";
+import Button from '../../../components/Button';
+import templateCertificado from '../../../assets/Certificado UniEvent.jpg';
 
 /**
  * Vista de Mis Certificados (Certificados.jsx).

@@ -1,36 +1,33 @@
-"use client";
-
 import React, { useState } from 'react';
-const imagoTipo = "/icons/icon_imagotipo.svg";
-import { useRouter } from 'next/navigation';
-import Button from '@/components/botones/Button';
+import isoTipo from '../assets/IsoTipo.png';
+import Button from './Button';
 
-const RUTAS = { home: '/', cursos: '/cursos', eventos: '/eventos', register: '/register', login: '/login' };
-
-const Navbar = () => {
-  const router = useRouter();
+const Navbar = ({ onNavigate }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   // Función para manejar la navegación y cerrar el menú móvil
   const handleNavigate = (view) => {
-    router.push(RUTAS[view]);
+    onNavigate(view);
     setIsOpen(false);
   };
 
   return (
-    <nav className="bg-unievents-bg shadow-md sticky top-0 z-50 px-6 py-0 min-h-[55px]">
+    <nav className="bg-unievents-bg shadow-md sticky top-0 z-50 px-6 py-4">
       <div className="flex justify-between items-center max-w-7xl mx-auto">
         {/* Logotipo interactivo con IsoTipo */}
         <div
-          className="flex items-center mt-2 gap-2 cursor-pointer"
+          className="flex items-center gap-2 cursor-pointer"
           onClick={() => handleNavigate('home')}
         >
-          <img src={imagoTipo} alt="UniEvent" className="h-35 w-auto object-contain -my-[73px] relative z-10" />
+          <img src={isoTipo} alt="UniEvent Logo" className="w-10 h-10 object-contain" />
+          <span className="text-2xl font-bold text-unievents-teal tracking-tight">
+            UniEvent
+          </span>
         </div>
 
         {/* Botón Menú Hamburguesa (Móvil) */}
         <button 
-          className="md:hidden mt-3 text-unievents-teal focus:outline-none"
+          className="md:hidden text-unievents-teal focus:outline-none"
           onClick={() => setIsOpen(!isOpen)}
         >
           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -43,7 +40,7 @@ const Navbar = () => {
         </button>
 
         {/* Enlaces de Navegación (Escritorio) */}
-        <div className="hidden md:flex mt-2 space-x-8 items-center">
+        <div className="hidden md:flex space-x-8 items-center">
           <button 
             className="text-gray-600 hover:text-unievents-teal font-medium transition" 
             onClick={() => handleNavigate('cursos')}

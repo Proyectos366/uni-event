@@ -1,8 +1,6 @@
-"use client";
-
 import React, { useState } from 'react';
 import CardEvent from '../../../components/CardEvent';
-import Button from '@/components/botones/Button';
+import Button from '../../../components/Button';
 import DetalleActividad from './DetalleActividad';
 
 /**
@@ -13,7 +11,14 @@ import DetalleActividad from './DetalleActividad';
  */
 const Actividades = ({ initialSelectedActivity, onClearSelectedActivity }) => {
   // Estado para la actividad seleccionada para ver detalles
-  const [selectedActivity, setSelectedActivity] = useState(initialSelectedActivity ?? null); // se monta al cambiar de pestaña, no hace falta effect
+  const [selectedActivity, setSelectedActivity] = useState(null);
+
+  // Sincronizar con la actividad seleccionada desde el exterior (ej: Dashboard)
+  React.useEffect(() => {
+    if (initialSelectedActivity) {
+      setSelectedActivity(initialSelectedActivity);
+    }
+  }, [initialSelectedActivity]);
 
   // Pestaña interna activa: 'cursos' o 'eventos'
   const [subTab, setSubTab] = useState('cursos');

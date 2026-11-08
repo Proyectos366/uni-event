@@ -1,4 +1,4 @@
-const imagoTipo = "/icons/icon.svg";
+import imagoTipo from '../assets/ImagoTipo.png';
 
 const Footer = () => {
   return (
@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
         {/* Identidad en el Footer - Logotipo Completo */}
         <div className="flex items-center">
-          <img src={imagoTipo} alt="UniEvent Logo" className="w-16 h-auto opacity-90" />
+          <img src={imagoTipo} alt="UniEvent Logo" className="w-15 h-auto opacity-90" />
         </div>
 
         {/* Copyright y Texto Legal */}

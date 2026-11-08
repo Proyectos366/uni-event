@@ -1,39 +1,32 @@
-import Ico from "./Ico";
+import React from 'react';
 
-const ETIQUETAS = ["Acceso", "Datos", "Confirmar"];
-
-// Indicador de progreso: círculo con check en pasos completados y etiqueta debajo.
-const StepIndicator = ({ currentStep, totalSteps = 3 }) => (
-  <ol className="flex items-start justify-center mb-8">
-    {Array.from({ length: totalSteps }, (_, i) => i + 1).map((step) => {
-      const hecho = step < currentStep;
-      const actual = step === currentStep;
-      return (
-        <li key={step} className="flex items-start">
-          <div className="flex flex-col items-center gap-1.5 w-16">
-            <span
-              className={`grid place-items-center w-10 h-10 rounded-full border-2 font-bold transition-all duration-300 ${
-                hecho
-                  ? "bg-unievents-teal border-unievents-teal text-white"
-                  : actual
-                    ? "bg-white border-unievents-teal text-unievents-teal ring-4 ring-teal-100"
-                    : "bg-white border-gray-200 text-gray-400"
-              }`}
-              aria-current={actual ? "step" : undefined}
-            >
-              {hecho ? <Ico nombre="check" /> : step}
-            </span>
-            <span className={`text-xs font-semibold ${actual || hecho ? "text-unievents-dark" : "text-gray-400"}`}>
-              {ETIQUETAS[step - 1]}
-            </span>
+const StepIndicator = ({ currentStep, totalSteps = 3 }) => {
+  return (
+    <div className="flex items-center justify-center gap-4 mb-8">
+      {Array.from({ length: totalSteps }, (_, i) => i + 1).map((step) => (
+        <div key={step} className="flex items-center">
+          {/* Círculo del paso */}
+          <div
+            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 transition-all duration-300 ${
+              step <= currentStep
+                ? 'bg-unievents-teal border-unievents-teal text-white'
+                : 'bg-white border-gray-300 text-gray-400'
+            }`}
+          >
+            {step}
           </div>
+          {/* Línea conectora entre pasos */}
           {step < totalSteps && (
-            <div className={`mt-5 h-0.5 w-10 rounded transition-colors duration-300 ${hecho ? "bg-unievents-teal" : "bg-gray-200"}`} />
+            <div
+              className={`w-12 h-1 ml-4 rounded ${
+                step < currentStep ? 'bg-unievents-teal' : 'bg-gray-200'
+              }`}
+            />
           )}
-        </li>
-      );
-    })}
-  </ol>
-);
+        </div>
+      ))}
+    </div>
+  );
+};
 
 export default StepIndicator;
