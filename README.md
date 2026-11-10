@@ -50,7 +50,7 @@ El desarrollo local usa SQLite por defecto y puede cambiar a Neon con
 esquema y un historial de migraciones distintos para cada proveedor.
 
 Localmente, `DATABASE_URL` puede apuntar a un archivo `file:...`; si no apunta a
-un archivo SQLite, la aplicación usa `prisma/dev.db`. También puedes definir
+un archivo SQLite, la aplicación usa `prisma/prisma/dev.db`. También puedes definir
 `SQLITE_DATABASE_URL` para elegir el archivo. `npm run dev:neon` usa las
 variables PostgreSQL disponibles, como `POSTGRES_PRISMA_URL` o `POSTGRES_URL`.
 
@@ -90,7 +90,7 @@ Docker, que sigue usando SQLite persistente en un volumen.
 El Compose de producción crea una imagen Next.js `standalone`, ejecuta las
 migraciones en un servicio previo y arranca la aplicación como usuario no-root.
 SQLite vive en el volumen persistente `sqlite-data`; no se publica un puerto de
-base de datos.
+base de datos. El volumen se monta en `prisma/prisma` dentro del contenedor.
 
 ```powershell
 if (!(Test-Path .env)) { Copy-Item .env.example .env }

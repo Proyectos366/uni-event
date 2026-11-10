@@ -6,9 +6,9 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: file:/data/app.db
+      DATABASE_URL: file:/app/prisma/prisma/dev.db
     volumes:
-      - sqlite-data:/data
+      - sqlite-data:/app/prisma/prisma
     restart: "no"
 
   app:
@@ -18,14 +18,14 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: file:/data/app.db
+      DATABASE_URL: file:/app/prisma/prisma/dev.db
     depends_on:
       migrate:
         condition: service_completed_successfully
     ports:
       - "${APP_PORT:-3000}:3000"
     volumes:
-      - sqlite-data:/data
+      - sqlite-data:/app/prisma/prisma
     develop:
       watch:
         - action: sync

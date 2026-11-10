@@ -42,7 +42,7 @@ export default async function validarInicioSesion(correo, clave) {
         clave: true,
         rolId: true,
         borrado: true,
-        validado: true,
+        estatus: true,
         createdAt: true,
       },
     });
@@ -55,7 +55,7 @@ export default async function validarInicioSesion(correo, clave) {
     }
 
     // 5. Verificar si el usuario está validado
-    if (!datosInicioSesion.validado) {
+    if (!datosInicioSesion.estatus) {
       return respuestasAlBack("error", "Usuario no autorizado");
     }
 
