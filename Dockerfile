@@ -18,7 +18,7 @@ RUN npm install \
 
 FROM dependencies AS migrator
 
-COPY prisma ./prisma
+COPY --chown=nextjs:nextjs prisma ./prisma
 COPY prisma.config.mjs ./prisma.config.mjs
 COPY database.config.mjs ./database.config.mjs
 

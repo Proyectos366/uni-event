@@ -90,7 +90,10 @@ Docker, que sigue usando SQLite persistente en un volumen.
 El Compose de producción crea una imagen Next.js `standalone`, ejecuta las
 migraciones en un servicio previo y arranca la aplicación como usuario no-root.
 SQLite vive en el volumen persistente `sqlite-data`; no se publica un puerto de
-base de datos. El volumen se monta en `prisma/prisma` dentro del contenedor.
+base de datos. Antes de migrar, un servicio prepara los permisos del volumen
+para el usuario de la aplicación; esto también repara el volumen si se creó con
+permisos incorrectos en una ejecución anterior. El volumen se monta en
+`/app/prisma/prisma` dentro del contenedor.
 
 ```powershell
 if (!(Test-Path .env)) { Copy-Item .env.example .env }
