@@ -1,50 +1,35 @@
-import React from 'react';
+import { armarTelefono } from "./validaciones";
 
-const StepConfirmacion = ({ formData, updateFormData }) => {
-  const roles = [
-    { id: 'estudiante', label: 'Estudiante', description: 'Participa en cursos y eventos' },
-    { id: 'organizador', label: 'Organizador', description: 'Crea y gestiona tus propios eventos' },
+// Paso 3: resumen. El rol no se elige aquí: el back asigna alumno (4) por defecto.
+export default function StepConfirmacion({ formData, error }) {
+  const filas = [
+    ["Correo", formData.correo],
+    ["Cédula", `${formData.nacionalidad === "1" ? "V" : "E"}-${formData.cedula}`],
+    ["Nombre", [formData.nombre, formData.nombreDos, formData.apellido, formData.apellidoDos].filter(Boolean).join(" ")],
+    ["Género", formData.genero === "1" ? "Hombre" : "Mujer"],
+    ["Nacimiento", formData.f_n],
+    ["Teléfono", armarTelefono(formData.prefijo, formData.telefono)],
   ];
 
   return (
-    <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-right-4 duration-300">
-      <h3 className="text-xl font-bold text-unievents-dark mb-2">Selecciona tu Rol</h3>
-      
-      {/* Opciones de Rol */}
-      <div className="grid grid-cols-1 gap-3">
-        {roles.map((role) => (
-          <label
-            key={role.id}
-            className={`flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all ${
-              formData.rol === role.id
-                ? 'border-unievents-teal bg-teal-50'
-                : 'border-gray-200 hover:border-teal-200'
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <span className="font-bold text-unievents-dark">{role.label}</span>
-              <input
-                type="radio"
-                name="rol"
-                value={role.id}
-                checked={formData.rol === role.id}
-                onChange={() => updateFormData({ rol: role.id })}
-                className="w-4 h-4 text-unievents-teal focus:ring-unievents-teal"
-              />
-            </div>
-            <p className="text-sm text-gray-500 mt-1">{role.description}</p>
-          </label>
+    <div className="flex flex-col gap-5">
+      <div>
+        <h3 className="text-xl font-bold text-unievents-dark">Confirma tus datos</h3>
+        <p className="text-sm text-gray-500">Revisa que todo esté correcto antes de crear tu cuenta.</p>
+      </div>
+
+      <dl className="rounded-2xl border border-gray-100 bg-gray-50/60 divide-y divide-gray-100 text-sm">
+        {filas.map(([k, v]) => (
+          <div key={k} className="flex justify-between gap-4 px-4 py-3">
+            <dt className="font-semibold text-gray-500">{k}</dt>
+            <dd className="font-semibold text-unievents-dark text-right break-all">{v || "—"}</dd>
+          </div>
         ))}
-      </div>
-      
-      {/* Resumen Final */}
-      <div className="mt-4 p-4 bg-unievents-bg rounded-xl border border-yellow-100">
-        <p className="text-sm text-unievents-dark">
-          <span className="font-bold">Resumen:</span> Registrarás a <span className="font-bold">{formData.nombre || '...'}</span> con el correo <span className="font-bold">{formData.email || '...'}</span>.
-        </p>
-      </div>
+      </dl>
+
+      {error && (
+        <p role="alert" className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-600">{error}</p>
+      )}
     </div>
   );
-};
-
-export default StepConfirmacion;
+}

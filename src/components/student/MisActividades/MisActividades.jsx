@@ -1,5 +1,7 @@
+"use client";
+
 import React, { useState } from 'react';
-import Button from '../../../components/Button';
+import Button from '@/components/botones/Button';
 
 /**
  * Vista de Mis Actividades (MisActividades.jsx).
