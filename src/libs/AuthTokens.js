@@ -17,22 +17,37 @@ export default class AuthTokens {
    @returns {string} Token generado.
   */
   static tokenValidarUsuario(num) {
-    // 2. Genera dos cadenas aleatorias
-    let result1 = Math.random().toString(34).substring(0, num);
-    let result2 = Math.random().toString(34).substring(0, num);
+    try {
+      // 2. Genera dos cadenas aleatorias
+      let result1 = Math.random().toString(34).substring(0, num);
+      let result2 = Math.random().toString(34).substring(0, num);
 
-    // 3. Filtra y extrae partes que comienzan con "0."
-    const token1 = result1
-      .split("; ")
-      .find((cookie) => cookie.startsWith("0."))
-      .slice(2);
-    const token2 = result2
-      .split("; ")
-      .find((cookie) => cookie.startsWith("0."))
-      .slice(2);
+      // 3. Filtra y extrae partes que comienzan con "0."
+      const token1 = result1
+        .split("; ")
+        .find((cookie) => cookie.startsWith("0."))
+        .slice(2);
+      const token2 = result2
+        .split("; ")
+        .find((cookie) => cookie.startsWith("0."))
+        .slice(2);
 
-    // 4. Retorna el token combinado
-    return token1 + token2;
+      // 4. Retorna el token combinado
+      const token = token1 + token2;
+
+      return {
+        status: "ok",
+        numero: 1,
+        message: "Token unico generado con éxito",
+        token: token,
+      };
+    } catch (error) {
+      return {
+        status: "error",
+        numero: 0,
+        message: "Error al generar el token unico",
+      };
+    }
   }
 
   /**
@@ -68,13 +83,13 @@ export default class AuthTokens {
         process.env.JWT_SECRET,
         {
           expiresIn: process.env.JWT_EXPIRATION,
-        }
+        },
       );
 
       // 7. Configura las opciones de la cookie
       const cookieOption = {
         expires: new Date(
-          Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
+          Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000,
         ),
         path: "/",
         httpOnly: true, // Mantener este flag por seguridad

@@ -111,7 +111,7 @@ model eventos {
   datosDespues Json? // Datos nuevos (INSERT o UPDATE)
   borrado      Boolean  @default(false)
   id_objeto    Int
-  id_usuario   Int
+  id_usuario   String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
