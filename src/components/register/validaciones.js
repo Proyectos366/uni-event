@@ -7,12 +7,12 @@ import { textRegex } from "@/utils/regex/textRegex";
 // Mismas reglas que valida el back (ValidarCampos / vCamposCrearUsuario), para avisar antes de enviar.
 
 export const PREFIJOS = [
-  { valor: "+58", etiqueta: "🇻🇪 +58" },
-  { valor: "+57", etiqueta: "🇨🇴 +57" },
-  { valor: "+1", etiqueta: "🇺🇸 +1" },
-  { valor: "+34", etiqueta: "🇪🇸 +34" },
-  { valor: "+51", etiqueta: "🇵🇪 +51" },
-  { valor: "+54", etiqueta: "🇦🇷 +54" },
+  { valor: "+58", etiqueta: "VE +58" },
+  { valor: "+57", etiqueta: "CO +57" },
+  { valor: "+1", etiqueta: "US +1" },
+  { valor: "+34", etiqueta: "ES +34" },
+  { valor: "+51", etiqueta: "PE +51" },
+  { valor: "+54", etiqueta: "AR +54" },
 ];
 
 export const requisitosClave = [

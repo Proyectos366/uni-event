@@ -23,7 +23,7 @@ export default function LoginPage() {
     setError("");
     setCargando(true);
     try {
-      // Contrato del back: POST /api/login { correo, clave } -> { status, message, redirect }
+      // Contrato del back: POST /api/login/iniciar-sesion { correo, clave } -> { status, message, redirect }
       const res = await fetch("/api/login/iniciar-sesion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

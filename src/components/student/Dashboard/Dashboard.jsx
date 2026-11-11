@@ -110,7 +110,7 @@ const Dashboard = ({ onLogout }) => {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#fefce8]">
+    <div className="flex min-h-screen bg-gradient-to-br from-teal-50/60 via-unievents-bg to-unievents-bg">
       {/* 1. SIDEBAR LATERAL GLOBAL REUTILIZABLE CON SOPORTE DRAWER MÓVIL */}
       <Sidebar 
         activeTab={activeTab} 
@@ -126,42 +126,38 @@ const Dashboard = ({ onLogout }) => {
       {/* 2. AREA DE CONTENIDO PRINCIPAL */}
       <div className="flex-grow flex flex-col min-w-0">
         
-        {/* Cabecera Superior del Dashboard */}
-        <header className="px-5 lg:px-8 py-5 flex items-center bg-[#fefce8] border-b border-yellow-100 sticky top-0 z-30">
-          {/* Logo ImagoTipo para móviles (antes del botón hamburguesa) */}
-          <img 
-            src={imagoTipo} 
-            alt="UniEvent Logo Mobile" 
-            className="lg:hidden w-12 h-12 object-contain mr-3 shrink-0 select-none"
-          />
-
-          {/* Botón Hamburguesa para móviles */}
-          <button 
+        {/* Cabecera superior */}
+        <header className="px-5 lg:px-8 py-4 flex items-center gap-3 bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-30">
+          <button
             onClick={() => setIsMobileMenuOpen(true)}
-            className="lg:hidden text-teal-600 hover:text-teal-700 p-1.5 rounded-xl hover:bg-teal-50 focus:outline-none transition-all cursor-pointer mr-3 shrink-0"
+            aria-label="Abrir menú"
+            className="lg:hidden text-unievents-teal p-2 rounded-xl hover:bg-teal-50 focus:outline-none transition-all cursor-pointer shrink-0"
           >
             <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
 
-          <h2 className="text-lg lg:text-2xl font-black text-unievents-dark uppercase tracking-wide flex-grow truncate select-none">
-            {activeTab === 'inicio' ? 'Inicio' : 
+          <img src="/icons/icon.svg" alt="UniEvent" className="lg:hidden w-10 h-10 object-contain shrink-0 select-none" />
+
+          <h2 className="text-xl lg:text-2xl font-black text-unievents-dark tracking-tight flex-grow truncate select-none">
+            {activeTab === 'inicio' ? 'Inicio' :
              activeTab === 'actividades' ? 'Actividades' :
-             activeTab === 'perfil-datos' ? 'Mis Datos' :
-             activeTab === 'mis-actividades' ? 'Mis Actividades' :
-             activeTab === 'certificados' ? 'Mis Certificados' :
+             activeTab === 'perfil-datos' ? 'Mis datos' :
+             activeTab === 'mis-actividades' ? 'Mis actividades' :
+             activeTab === 'certificados' ? 'Mis certificados' :
              activeTab.replace('-', ' ')}
           </h2>
 
-          {/* Badge del Estudiante / Usuario Gabriel */}
-          <div className="flex items-center gap-2 sm:gap-3 bg-white px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl shadow-sm border border-gray-100 shrink-0">
-            <span className="bg-blue-600 text-white text-[10px] sm:text-xs font-black px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg uppercase">
-              Estudiante
+          {/* Usuario */}
+          <div className="flex items-center gap-3 rounded-full bg-white pl-1.5 pr-4 py-1.5 shadow-sm border border-gray-100 shrink-0">
+            <span className="grid place-items-center w-9 h-9 rounded-full bg-gradient-to-br from-teal-400 to-unievents-dark text-white font-black select-none">
+              G
             </span>
-            <span className="font-extrabold text-unievents-dark text-xs sm:text-sm select-none">
-              Gabriel
-            </span>
+            <div className="hidden sm:flex flex-col leading-tight select-none">
+              <span className="font-extrabold text-unievents-dark text-sm">Gabriel</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-unievents-teal">Estudiante</span>
+            </div>
           </div>
         </header>
 
@@ -169,13 +165,55 @@ const Dashboard = ({ onLogout }) => {
         <main className="flex-grow p-4 sm:p-8 overflow-y-auto">
           {activeTab === 'inicio' ? (
             <div className="space-y-12">
+
+              {/* Portada de bienvenida */}
+              <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-unievents-dark via-teal-800 to-unievents-teal px-8 py-10 text-white shadow-xl">
+                <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-unievents-gold/20 blur-3xl" />
+                <div className="absolute -bottom-20 left-10 w-56 h-56 rounded-full bg-teal-300/20 blur-3xl" />
+                <div className="relative max-w-2xl">
+                  <p className="text-sm font-bold uppercase tracking-widest text-unievents-gold">Panel del estudiante</p>
+                  <h3 className="mt-2 text-3xl sm:text-4xl font-black tracking-tight">¡Hola, Gabriel!</h3>
+                  <p className="mt-3 text-teal-50/90 text-lg leading-relaxed">
+                    Encuentra cursos y eventos, revisa tus inscripciones y descarga tus certificados.
+                  </p>
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <button
+                      onClick={() => setActiveTab('actividades')}
+                      className="rounded-full bg-unievents-gold px-6 py-2.5 font-bold text-unievents-dark shadow-lg hover:brightness-110 hover:-translate-y-0.5 transition cursor-pointer"
+                    >
+                      Explorar actividades
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('mis-actividades')}
+                      className="rounded-full border border-white/40 px-6 py-2.5 font-bold hover:bg-white/10 transition cursor-pointer"
+                    >
+                      Mis actividades
+                    </button>
+                  </div>
+                </div>
+              </section>
+
               
+              {/* Estadísticas rápidas */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {[
+                  { valor: upcomingEvents.length, etiqueta: 'Próximos eventos', color: 'from-teal-400 to-unievents-dark' },
+                  { valor: featuredEvents.length, etiqueta: 'Eventos destacados', color: 'from-unievents-gold to-orange-500' },
+                  { valor: Object.keys(calendarEvents).length, etiqueta: 'En tu calendario', color: 'from-sky-400 to-teal-600' },
+                ].map((t) => (
+                  <div key={t.etiqueta} className="flex items-center gap-4 rounded-3xl bg-white border border-gray-100 p-5 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all">
+                    <span className={`grid place-items-center w-14 h-14 rounded-2xl bg-gradient-to-br ${t.color} text-white text-2xl font-black shadow-md`}>{t.valor}</span>
+                    <span className="font-bold text-unievents-dark">{t.etiqueta}</span>
+                  </div>
+                ))}
+              </div>
+
               {/* FILA 1: Próximos Eventos y Calendario */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
                 {/* Panel de Próximos Eventos (Col-7) */}
                 <section className="lg:col-span-7 space-y-6">
-                  <h3 className="text-xl font-extrabold text-unievents-dark border-l-4 border-unievents-teal pl-3">
+                  <h3 className="text-xl font-black text-unievents-dark flex items-center gap-3 before:content-[''] before:w-1.5 before:h-6 before:rounded-full before:bg-gradient-to-b before:from-unievents-gold before:to-orange-400">
                     Próximos eventos
                   </h3>
 
@@ -194,11 +232,11 @@ const Dashboard = ({ onLogout }) => {
                     {upcomingEvents.map((evt) => (
                       <div 
                         key={evt.id} 
-                        className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:shadow-md transition-shadow"
+                        className="bg-white p-4 sm:p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:shadow-xl hover:-translate-y-0.5 transition-all"
                       >
                         <div className="flex items-center gap-4 sm:gap-5">
                           {/* Badge de Fecha */}
-                          <div className="bg-teal-50 border border-teal-100 rounded-xl px-4 py-3 flex flex-col items-center justify-center text-unievents-teal shrink-0 select-none">
+                          <div className="bg-gradient-to-br from-teal-400 to-unievents-dark rounded-2xl px-4 py-3 flex flex-col items-center justify-center text-white shadow-md shrink-0 select-none">
                             <span className="text-2xl font-black leading-none">{evt.day}</span>
                             <span className="text-xs font-bold uppercase mt-1">{evt.month}</span>
                           </div>
@@ -241,12 +279,12 @@ const Dashboard = ({ onLogout }) => {
 
                 {/* Panel de Calendario (Col-5) */}
                 <section className="lg:col-span-5 space-y-6">
-                  <h3 className="text-xl font-extrabold text-unievents-dark border-l-4 border-unievents-teal pl-3">
+                  <h3 className="text-xl font-black text-unievents-dark flex items-center gap-3 before:content-[''] before:w-1.5 before:h-6 before:rounded-full before:bg-gradient-to-b before:from-unievents-gold before:to-orange-400">
                     Mi calendario
                   </h3>
 
                   {/* Componente Mini-Calendario Premium */}
-                  <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-4">
+                  <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm space-y-4">
                     {/* Header del Calendario */}
                     <div className="flex justify-between items-center px-1">
                       <span className="text-sm font-black text-unievents-dark select-none">
@@ -286,14 +324,14 @@ const Dashboard = ({ onLogout }) => {
                             key={day} 
                             className={`aspect-square flex flex-col items-center justify-center rounded-lg relative transition-all group/day cursor-pointer ${
                               hasEvent 
-                                ? 'bg-teal-50 text-unievents-teal border border-teal-100' 
+                                ? 'bg-gradient-to-br from-teal-400 to-unievents-teal text-white shadow-md' 
                                 : 'hover:bg-gray-50 text-unievents-dark'
                             }`}
                           >
                             <span>{day}</span>
                             {/* Punto de evento */}
                             {hasEvent && (
-                              <span className="absolute bottom-1 w-1.5 h-1.5 rounded-full bg-unievents-teal" />
+                              <span className="absolute bottom-1 w-1.5 h-1.5 rounded-full bg-unievents-gold" />
                             )}
                             
                             {/* Tooltip con información del evento */}
@@ -314,10 +352,10 @@ const Dashboard = ({ onLogout }) => {
               {/* FILA 2: Eventos Destacados */}
               <section className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-xl font-extrabold text-unievents-dark border-l-4 border-unievents-teal pl-3">
+                  <h3 className="text-xl font-black text-unievents-dark flex items-center gap-3 before:content-[''] before:w-1.5 before:h-6 before:rounded-full before:bg-gradient-to-b before:from-unievents-gold before:to-orange-400">
                     Eventos destacados
                   </h3>
-                  <button className="text-sm font-bold text-blue-600 hover:text-blue-700 hover:underline border border-blue-600/30 px-3 py-1 rounded-lg bg-white shadow-sm hover:shadow transition-all">
+                  <button className="text-sm font-bold text-unievents-teal hover:text-unievents-dark hover:underline border border-unievents-teal/30 px-3 py-1 rounded-lg bg-white shadow-sm hover:shadow transition-all">
                     Ver todos
                   </button>
                 </div>

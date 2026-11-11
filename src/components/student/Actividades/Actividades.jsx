@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import PageHero from '../ui/PageHero';
 import CardEvent from '../../../components/CardEvent';
 import Button from '@/components/botones/Button';
 import DetalleActividad from './DetalleActividad';
@@ -165,6 +166,11 @@ const Actividades = ({ initialSelectedActivity, onClearSelectedActivity }) => {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
+      <PageHero
+        titulo="Explora cursos y eventos"
+        subtitulo="Encuentra la próxima actividad para seguir aprendiendo y reserva tu cupo."
+        chips={[{ valor: coursesData.length, etiqueta: "Cursos" }, { valor: eventsData.length, etiqueta: "Eventos" }]}
+      />
       
       {/* Estilos locales para garantizar animación premium descendente */}
       <style>{`
@@ -184,7 +190,7 @@ const Actividades = ({ initialSelectedActivity, onClearSelectedActivity }) => {
       `}</style>
 
       {/* 1. BARRA DE BÚSQUEDA Y FILTROS INTERACTIVOS */}
-      <div className="bg-white p-4 rounded-2xl border border-yellow-100 shadow-sm flex flex-wrap gap-4 items-center justify-between">
+      <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm flex flex-wrap gap-4 items-center justify-between">
         
         {/* Controles de Entrada */}
         <div className="flex flex-wrap flex-grow gap-3 max-w-4xl">
@@ -200,7 +206,7 @@ const Actividades = ({ initialSelectedActivity, onClearSelectedActivity }) => {
               placeholder="Buscar eventos..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-unievents-teal focus:border-transparent text-sm font-medium bg-[#fcfcfc] placeholder-gray-400 transition-all"
+              className="w-full pl-11 pr-4 py-2.5 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-unievents-teal focus:border-transparent text-sm font-medium bg-[#fcfcfc] placeholder-gray-400 transition-all"
             />
           </div>
 
@@ -209,7 +215,7 @@ const Actividades = ({ initialSelectedActivity, onClearSelectedActivity }) => {
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="w-full pl-4 pr-10 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-unievents-teal bg-[#fcfcfc] text-sm font-semibold text-unievents-dark transition-all appearance-none cursor-pointer"
+              className="w-full pl-4 pr-10 py-2.5 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-unievents-teal bg-[#fcfcfc] text-sm font-semibold text-unievents-dark transition-all appearance-none cursor-pointer"
             >
               <option value="Todas">Todas las categorías</option>
               {allCategories.filter(cat => cat !== 'Todas').map((cat) => (
@@ -228,7 +234,7 @@ const Actividades = ({ initialSelectedActivity, onClearSelectedActivity }) => {
             <select
               value={dateFilter}
               onChange={(e) => setDateFilter(e.target.value)}
-              className="w-full pl-4 pr-10 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-unievents-teal bg-[#fcfcfc] text-sm font-semibold text-unievents-dark transition-all appearance-none cursor-pointer"
+              className="w-full pl-4 pr-10 py-2.5 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-unievents-teal bg-[#fcfcfc] text-sm font-semibold text-unievents-dark transition-all appearance-none cursor-pointer"
             >
               <option value="Todas">Cualquier fecha</option>
               <option value="Julio">Julio 2025</option>
@@ -250,7 +256,7 @@ const Actividades = ({ initialSelectedActivity, onClearSelectedActivity }) => {
             onClick={() => setViewMode('list')}
             className={`p-2 rounded-lg transition-all ${
               viewMode === 'list' 
-                ? 'bg-white text-blue-600 shadow-sm border border-gray-100' 
+                ? 'bg-white text-unievents-teal shadow-sm border border-gray-100' 
                 : 'text-gray-400 hover:text-gray-600'
             }`}
             title="Vista de Lista"
@@ -265,7 +271,7 @@ const Actividades = ({ initialSelectedActivity, onClearSelectedActivity }) => {
             onClick={() => setViewMode('grid')}
             className={`p-2 rounded-lg transition-all ${
               viewMode === 'grid' 
-                ? 'bg-blue-500 text-white shadow-md' 
+                ? 'bg-unievents-teal text-white shadow-md' 
                 : 'text-gray-400 hover:text-gray-600'
             }`}
             title="Vista de Grilla"
@@ -279,35 +285,29 @@ const Actividades = ({ initialSelectedActivity, onClearSelectedActivity }) => {
       </div>
 
       {/* 2. SUB-NAVEGACIÓN PORTAFOLIO */}
-      <div className="flex gap-1 border-b border-gray-200/60 pb-px">
+      <div className="inline-flex gap-1 p-1 rounded-2xl bg-white border border-gray-100 shadow-sm max-w-full overflow-x-auto">
         {/* Pestaña Cursos */}
         <button
           onClick={() => setSubTab('cursos')}
-          className={`pb-3 px-6 text-sm font-black tracking-wide uppercase transition-all border-b-2 relative ${
-            subTab === 'cursos' 
-              ? 'border-unievents-teal text-unievents-dark font-extrabold' 
-              : 'border-transparent text-gray-400 hover:text-gray-600 hover:border-gray-200'
+          className={`px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+            subTab === 'cursos'
+              ? 'bg-unievents-teal text-white shadow-md shadow-teal-200'
+              : 'text-gray-500 hover:bg-teal-50 hover:text-unievents-teal'
           }`}
         >
           Catálogo de Cursos
-          {subTab === 'cursos' && (
-            <span className="absolute bottom-0 inset-x-0 h-0.5 bg-unievents-teal rounded-full" />
-          )}
         </button>
 
         {/* Pestaña Eventos */}
         <button
           onClick={() => setSubTab('eventos')}
-          className={`pb-3 px-6 text-sm font-black tracking-wide uppercase transition-all border-b-2 relative ${
-            subTab === 'eventos' 
-              ? 'border-unievents-teal text-unievents-dark font-extrabold' 
-              : 'border-transparent text-gray-400 hover:text-gray-600 hover:border-gray-200'
+          className={`px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+            subTab === 'eventos'
+              ? 'bg-unievents-teal text-white shadow-md shadow-teal-200'
+              : 'text-gray-500 hover:bg-teal-50 hover:text-unievents-teal'
           }`}
         >
           Eventos (Talleres / Seminarios)
-          {subTab === 'eventos' && (
-            <span className="absolute bottom-0 inset-x-0 h-0.5 bg-unievents-teal rounded-full" />
-          )}
         </button>
       </div>
 
@@ -324,6 +324,7 @@ const Actividades = ({ initialSelectedActivity, onClearSelectedActivity }) => {
                   description={item.description}
                   date={item.date}
                   imageUrl={item.imageUrl}
+                  type={subTab === 'cursos' ? 'curso' : 'evento'}
                   category={item.category}
                   status={item.status}
                   statusType={item.statusType}
@@ -339,11 +340,11 @@ const Actividades = ({ initialSelectedActivity, onClearSelectedActivity }) => {
               {filteredData.map((item) => (
                 <div 
                   key={item.id} 
-                  className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 hover:shadow-md transition-all"
+                  className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 hover:shadow-xl hover:-translate-y-0.5 transition-all"
                 >
                   <div className="flex items-start sm:items-center gap-5">
                     {/* Badge de Categoría e Icono */}
-                    <div className="bg-teal-50 border border-teal-100 rounded-xl p-4 flex flex-col items-center justify-center text-unievents-teal shrink-0 select-none w-16 h-16">
+                    <div className="bg-gradient-to-br from-teal-400 to-unievents-dark rounded-2xl p-4 flex flex-col items-center justify-center text-white shadow-md shrink-0 select-none w-16 h-16">
                       <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                       </svg>
@@ -383,7 +384,7 @@ const Actividades = ({ initialSelectedActivity, onClearSelectedActivity }) => {
                     <Button 
                       onClick={() => setSelectedActivity(item)}
                       variant="secondary" 
-                      className="!px-4 !py-2 text-xs font-bold border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white transition-all shrink-0"
+                      className="!px-4 !py-2 text-xs font-bold border-unievents-teal text-unievents-teal hover:bg-unievents-teal hover:text-white transition-all shrink-0"
                     >
                       Ver más
                     </Button>
@@ -394,7 +395,7 @@ const Actividades = ({ initialSelectedActivity, onClearSelectedActivity }) => {
           )
         ) : (
           /* --- ESTADO VACÍO (SIN COINCIDENCIAS) --- */
-          <div className="bg-white/80 p-12 rounded-2xl border border-yellow-100/50 shadow-inner flex flex-col items-center justify-center text-center space-y-4">
+          <div className="bg-white/80 p-12 rounded-2xl border border-gray-100/50 shadow-inner flex flex-col items-center justify-center text-center space-y-4">
             <div className="w-20 h-20 bg-teal-50 rounded-full flex items-center justify-center text-unievents-teal shadow-inner">
               <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.0" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />

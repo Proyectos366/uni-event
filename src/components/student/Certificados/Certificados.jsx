@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import PageHero from '../ui/PageHero';
 import jsPDF from 'jspdf';
 import Button from '@/components/botones/Button';
 const templateCertificado = "/assets/Certificado UniEvent.jpg";
@@ -103,16 +104,24 @@ const Certificados = () => {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
+      <PageHero
+        titulo="Tus logros académicos"
+        subtitulo="Previsualiza y descarga en PDF los certificados de las actividades que completaste."
+        chips={[{ valor: certificatesData.length, etiqueta: "Obtenidos" }]}
+      />
       
       {/* 1. GRILLA DE CERTIFICADOS (MOCKUP ORIGINAL) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl">
         {certificatesData.map((cert) => (
           <div 
             key={cert.id} 
-            className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between gap-5 hover:shadow-md transition-shadow relative overflow-hidden"
+            className="bg-white p-6 rounded-3xl border border-gray-100 border-t-4 border-t-unievents-gold shadow-sm flex flex-col justify-between gap-5 hover:shadow-xl hover:-translate-y-0.5 transition-all relative overflow-hidden"
           >
             {/* Detalles de la tarjeta */}
             <div className="space-y-2.5">
+              <span className="grid place-items-center w-12 h-12 rounded-2xl bg-gradient-to-br from-unievents-gold to-orange-400 text-white shadow-md">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
+              </span>
               <h4 className="text-lg font-black text-unievents-dark leading-tight">
                 {cert.title}
               </h4>
@@ -139,11 +148,11 @@ const Certificados = () => {
                 <button
                   onClick={() => handleDownloadPDF(cert)}
                   disabled={downloadingId !== null}
-                  className="flex items-center gap-1.5 border border-blue-500 hover:bg-blue-500 hover:text-white text-blue-500 font-extrabold px-3.5 py-2 rounded-xl text-xs transition-all active:scale-95 disabled:opacity-50 disabled:cursor-wait"
+                  className="flex items-center gap-1.5 border border-unievents-teal hover:bg-unievents-teal hover:text-white text-unievents-teal font-extrabold px-3.5 py-2 rounded-xl text-xs transition-all active:scale-95 disabled:opacity-50 disabled:cursor-wait"
                 >
                   {downloadingId === cert.id ? (
                     <>
-                      <svg className="animate-spin h-3.5 w-3.5 text-blue-500 hover:text-white" fill="none" viewBox="0 0 24 24">
+                      <svg className="animate-spin h-3.5 w-3.5 text-unievents-teal hover:text-white" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
@@ -272,7 +281,7 @@ const Certificados = () => {
                 onClick={() => {
                   handleDownloadPDF(previewCert);
                 }}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-extrabold px-5 py-2.5 rounded-xl transition-all shadow-sm active:scale-95"
+                className="bg-unievents-teal hover:bg-unievents-dark text-white font-extrabold px-5 py-2.5 rounded-xl transition-all shadow-sm active:scale-95"
               >
                 Descargar en PDF
               </Button>

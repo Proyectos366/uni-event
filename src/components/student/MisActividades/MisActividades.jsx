@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import PageHero from '../ui/PageHero';
 import Button from '@/components/botones/Button';
 
 /**
@@ -26,7 +27,7 @@ const MisActividades = () => {
       month: "Jul",
       type: "proceso",
       statusLabel: "Inscrito",
-      dateBg: "bg-blue-600"
+      dateBg: "bg-unievents-teal"
     },
     {
       id: 2,
@@ -75,6 +76,15 @@ const MisActividades = () => {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
+      <PageHero
+        titulo="Tus inscripciones"
+        subtitulo="Sigue el estado de tus inscripciones, cancela las que no vayas a cursar y revisa las finalizadas."
+        chips={[
+          { valor: activities.filter((a) => a.type === "proceso").length, etiqueta: "En proceso" },
+          { valor: activities.filter((a) => a.type === "pendiente").length, etiqueta: "Pendientes" },
+          { valor: activities.filter((a) => a.type === "finalizada").length, etiqueta: "Finalizadas" },
+        ]}
+      />
       
       {/* Estilos locales para animación descendente premium */}
       <style>{`
@@ -94,50 +104,41 @@ const MisActividades = () => {
       `}</style>
 
       {/* 1. PORTAFOLIO DE NAVEGACIÓN INTERNA */}
-      <div className="flex gap-1 border-b border-gray-200/60 pb-px">
+      <div className="inline-flex gap-1 p-1 rounded-2xl bg-white border border-gray-100 shadow-sm max-w-full overflow-x-auto">
         {/* Pestaña: En Proceso */}
         <button
           onClick={() => { setSubTab('proceso'); setConfirmCancelId(null); }}
-          className={`pb-3 px-6 text-sm font-black tracking-wide uppercase transition-all border-b-2 relative ${
-            subTab === 'proceso' 
-              ? 'border-unievents-teal text-unievents-dark font-extrabold' 
-              : 'border-transparent text-gray-400 hover:text-gray-600 hover:border-gray-200'
+          className={`px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+            subTab === 'proceso'
+              ? 'bg-unievents-teal text-white shadow-md shadow-teal-200'
+              : 'text-gray-500 hover:bg-teal-50 hover:text-unievents-teal'
           }`}
         >
           En Proceso
-          {subTab === 'proceso' && (
-            <span className="absolute bottom-0 inset-x-0 h-0.5 bg-unievents-teal rounded-full" />
-          )}
         </button>
 
         {/* Pestaña: Pendiente */}
         <button
           onClick={() => { setSubTab('pendiente'); setConfirmCancelId(null); }}
-          className={`pb-3 px-6 text-sm font-black tracking-wide uppercase transition-all border-b-2 relative ${
-            subTab === 'pendiente' 
-              ? 'border-unievents-teal text-unievents-dark font-extrabold' 
-              : 'border-transparent text-gray-400 hover:text-gray-600 hover:border-gray-200'
+          className={`px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+            subTab === 'pendiente'
+              ? 'bg-unievents-teal text-white shadow-md shadow-teal-200'
+              : 'text-gray-500 hover:bg-teal-50 hover:text-unievents-teal'
           }`}
         >
           Pendientes
-          {subTab === 'pendiente' && (
-            <span className="absolute bottom-0 inset-x-0 h-0.5 bg-unievents-teal rounded-full" />
-          )}
         </button>
 
         {/* Pestaña: Finalizada */}
         <button
           onClick={() => { setSubTab('finalizada'); setConfirmCancelId(null); }}
-          className={`pb-3 px-6 text-sm font-black tracking-wide uppercase transition-all border-b-2 relative ${
-            subTab === 'finalizada' 
-              ? 'border-unievents-teal text-unievents-dark font-extrabold' 
-              : 'border-transparent text-gray-400 hover:text-gray-600 hover:border-gray-200'
+          className={`px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
+            subTab === 'finalizada'
+              ? 'bg-unievents-teal text-white shadow-md shadow-teal-200'
+              : 'text-gray-500 hover:bg-teal-50 hover:text-unievents-teal'
           }`}
         >
           Finalizadas
-          {subTab === 'finalizada' && (
-            <span className="absolute bottom-0 inset-x-0 h-0.5 bg-unievents-teal rounded-full" />
-          )}
         </button>
       </div>
 
@@ -152,7 +153,7 @@ const MisActividades = () => {
               return (
                 <div 
                   key={act.id} 
-                  className={`bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between gap-5 hover:shadow-md transition-all relative overflow-hidden ${
+                  className={`bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col justify-between gap-5 hover:shadow-xl hover:-translate-y-0.5 transition-all relative overflow-hidden ${
                     isConfirming ? 'ring-2 ring-red-500/30' : ''
                   }`}
                 >
@@ -160,7 +161,7 @@ const MisActividades = () => {
                   <div className="flex items-center gap-5">
                     
                     {/* Bloque de Fecha */}
-                    <div className={`${act.dateBg} text-white rounded-xl px-4 py-3.5 flex flex-col items-center justify-center shrink-0 w-16 select-none shadow-sm`}>
+                    <div className={`${subTab === 'proceso' ? 'bg-gradient-to-br from-teal-400 to-unievents-dark' : subTab === 'pendiente' ? 'bg-gradient-to-br from-amber-400 to-orange-500' : 'bg-gradient-to-br from-slate-400 to-slate-600'} text-white rounded-2xl px-4 py-3.5 flex flex-col items-center justify-center shrink-0 w-16 select-none shadow-md`}>
                       <span className="text-2xl font-black leading-none">{act.day}</span>
                       <span className="text-xs font-black uppercase mt-1">{act.month}</span>
                     </div>
@@ -230,7 +231,7 @@ const MisActividades = () => {
                     )}
 
                     {/* Badge de Estado en extremo inferior derecho */}
-                    <span className={`text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-wider select-none ${
+                    <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider select-none ${
                       subTab === 'proceso' ? 'bg-[#22d3ee]/20 text-cyan-800' :
                       subTab === 'pendiente' ? 'bg-amber-100 text-amber-800' :
                       'bg-emerald-100 text-emerald-800'
@@ -246,7 +247,7 @@ const MisActividades = () => {
           </div>
         ) : (
           /* --- ESTADO VACÍO (SIN COINCIDENCIAS) --- */
-          <div className="bg-white/80 p-12 rounded-2xl border border-yellow-100/50 shadow-inner flex flex-col items-center justify-center text-center space-y-4">
+          <div className="bg-white/80 p-12 rounded-2xl border border-gray-100/50 shadow-inner flex flex-col items-center justify-center text-center space-y-4">
             <div className="w-20 h-20 bg-teal-50 rounded-full flex items-center justify-center text-unievents-teal shadow-inner">
               <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.0" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
