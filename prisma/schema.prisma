@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider   = "prisma-client"
+  output     = "../src/generated/prisma"
   engineType = "client"
 }
 
@@ -99,4 +99,19 @@ model sesion {
   usuarios usuario @relation(fields: [usuarioId], references: [id])
 
   @@map("sesiones")
+}
+
+model eventos {
+  id           Int      @id @default(autoincrement())
+  tabla        String
+  accion       String
+  ip           String?  @default("") // Dirección IP del usuario
+  descripcion  String?  @default("")
+  datosAntes   Json? // Datos anteriores (UPDATE o DELETE)
+  datosDespues Json? // Datos nuevos (INSERT o UPDATE)
+  borrado      Boolean  @default(false)
+  id_objeto    Int
+  id_usuario   String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

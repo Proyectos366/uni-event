@@ -25,6 +25,12 @@ export default async function obtenerDatosUsuarioToken() {
       return respuestasAlBack(validaciones.status, validaciones.message);
     }
 
+    if (validaciones.token === false) {
+      return respuestasAlBack("ok", "No hay token", {
+        token: false,
+      });
+    }
+
     // 3. Consultar en la base de datos los datos del usuario por correo.
     const datosUsuario = await prisma.usuario.findFirst({
       where: { correo: validaciones.correo },

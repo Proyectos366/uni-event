@@ -71,6 +71,22 @@ CREATE TABLE "sesiones" (
 );
 
 -- CreateTable
+CREATE TABLE "eventos" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "tabla" TEXT NOT NULL,
+    "accion" TEXT NOT NULL,
+    "ip" TEXT DEFAULT '',
+    "descripcion" TEXT DEFAULT '',
+    "datosAntes" JSONB,
+    "datosDespues" JSONB,
+    "borrado" BOOLEAN NOT NULL DEFAULT false,
+    "id_objeto" INTEGER NOT NULL,
+    "id_usuario" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
+
+-- CreateTable
 CREATE TABLE "_profesionTousuario" (
     "A" INTEGER NOT NULL,
     "B" TEXT NOT NULL,

@@ -1,8 +1,8 @@
-// src/lib/prisma.ts
+// src/config/prisma.js
 import "dotenv/config";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@/generated/prisma/client";
+import { PrismaClient } from "../generated/prisma/client.ts";
 import {
   getDatabaseProvider,
   getDirectPostgresDatabaseUrl,

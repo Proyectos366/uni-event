@@ -1,4 +1,17 @@
 services:
+  sqlite-permissions:
+    build:
+      context: .
+      target: migrator
+    user: "0:0"
+    command:
+      - sh
+      - -c
+      - chown -R nextjs:nextjs /app/prisma/prisma
+    volumes:
+      - sqlite-data:/app/prisma/prisma
+    restart: "no"
+
   migrate:
     build:
       context: .
@@ -6,9 +19,12 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: file:/data/app.db
+      DATABASE_URL: file:/app/prisma/prisma/dev.db
     volumes:
-      - sqlite-data:/data
+      - sqlite-data:/app/prisma/prisma
+    depends_on:
+      sqlite-permissions:
+        condition: service_completed_successfully
     restart: "no"
 
   app:
@@ -18,14 +34,14 @@ services:
     env_file:
       - .env
     environment:
-      DATABASE_URL: file:/data/app.db
+      DATABASE_URL: file:/app/prisma/prisma/dev.db
     depends_on:
       migrate:
         condition: service_completed_successfully
     ports:
       - "${APP_PORT:-3000}:3000"
     volumes:
-      - sqlite-data:/data
+      - sqlite-data:/app/prisma/prisma
     develop:
       watch:
         - action: sync
@@ -48,48 +64,3 @@ services:
 
 volumes:
   sqlite-data:
-
-
-# services:
-#   migrate:
-#     build:
-#       context: .
-#       target: migrator
-#     env_file:
-#       - .env
-#     environment:
-#       DATABASE_URL: file:/data/app.db
-#     volumes:
-#       - sqlite-data:/data
-#     restart: "no"
-
-#   app:
-#     build:
-#       context: .
-#       target: runner
-#     env_file:
-#       - .env
-#     environment:
-#       DATABASE_URL: file:/data/app.db
-#     depends_on:
-#       migrate:
-#         condition: service_completed_successfully
-#     ports:
-#       - "${APP_PORT:-3000}:3000"
-#     volumes:
-#       - sqlite-data:/data
-#     init: true
-#     restart: unless-stopped
-#     healthcheck:
-#       test:
-#         - CMD
-#         - node
-#         - -e
-#         - "fetch('http://127.0.0.1:3000').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"
-#       interval: 30s
-#       timeout: 5s
-#       retries: 3
-#       start_period: 20s
-
-# volumes:
-#   sqlite-data:

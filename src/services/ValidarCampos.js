@@ -213,8 +213,8 @@ export default class ValidarCampos {
       // 2. Normaliza el texto y lo asigna al campo correspondiente
       const campo =
         opcion === "apellido"
-          ? { apellido_dos: nombre ? nombre.toLowerCase() : "" }
-          : { nombre_dos: nombre ? nombre.toLowerCase() : "" };
+          ? { apellidoDos: nombre ? nombre.toLowerCase() : "" }
+          : { nombreDos: nombre ? nombre.toLowerCase() : "" };
 
       // 3. Retorna respuesta exitosa con el campo validado
       return respuestasAlBack(
@@ -394,40 +394,58 @@ export default class ValidarCampos {
   }
 
   /**
-   Valida un campo de ID numérico. Verifica que no esté vacío, que sea un número válido y mayor a cero.
-   El mensaje se personaliza según el tipo de ID indicado en `detalles`.
-   @function validarCampoId
+   Valida un campo de ID.
+   - Si se pasa el parámetro `tipo`, valida que el ID sea numérico (ej. 1, 2, 3...).
+   - Si NO se pasa (vacío, null o undefined), valida UUID v4.
    @param {string|number} id - ID ingresado por el usuario.
-   @param {string} detalles - Descripción del campo (ej. "usuario", "institución").
-   @returns {Object} Objeto con estado, mensaje y ID validado.
+   @param {string} detalles - Descripción del campo (ej. "usuario", "rol").
+   @param {string} [tipo] - Si viene, se valida como numérico. Si no, como UUID.
+   @returns {Object} Objeto con estado, mensaje e ID validado.
   */
-  static validarCampoId(id, detalles) {
+  static validarCampoId(id, detalles, tipo) {
     try {
-      // 1. Verifica si el campo está vacío
-      if (!id) {
-        return respuestasAlBack("error", `Campo id ${detalles} vacio`);
+      // 1. Validación común: nulo, undefined o vacío
+      if (id === null || id === undefined || id === "") {
+        return respuestasAlBack("error", `Campo id ${detalles} vacio...`);
       }
 
-      // 2. Convierte el valor a número
-      const idNumero = Number(id);
+      // 2. Normalizar a string
+      const idString = String(id).trim();
 
-      // 3. Verifica si es un número válido y positivo
-      if (isNaN(idNumero) || idNumero <= 0) {
-        return respuestasAlBack("error", `Error, id ${detalles} inválido`);
+      // 3. Si viene el parámetro `tipo` → validar numérico
+      if (tipo) {
+        const idNum = Number(idString);
+
+        if (!Number.isInteger(idNum)) {
+          return respuestasAlBack(
+            "error",
+            `Error, id ${detalles} debe ser un número entero...`,
+          );
+        }
+
+        if (idNum <= 0) {
+          return respuestasAlBack("error", `Error, id ${detalles} invalido...`);
+        }
+
+        return respuestasAlBack("ok", `Campo id ${detalles} valido...`, {
+          id: idNum,
+        });
       }
 
-      // 4. Retorna respuesta exitosa con el ID validado
-      return respuestasAlBack("ok", `Campo id ${detalles} valido`, {
-        id: idNumero,
+      // 4. Si NO viene el parámetro → validar UUID v4
+      if (!uuidRegex.test(idString)) {
+        return respuestasAlBack("error", `Error, id ${detalles} inválido...`);
+      }
+
+      return respuestasAlBack("ok", `Campo id ${detalles} valido...`, {
+        id: idString,
       });
     } catch (error) {
-      // 5. Manejo de errores inesperados
-      console.log(`Error, interno al (validar id ${detalles}): ` + error);
+      console.log(`Error interno al (validar id ${detalles}): ` + error);
 
-      // Retorna una respuesta del error inesperado
       return respuestasAlBack(
         "error",
-        `Error, interno al (validar id ${detalles})`,
+        `Error interno al (validar id ${detalles})`,
       );
     }
   }
@@ -903,6 +921,53 @@ export default class ValidarCampos {
 
       // Retorna una respuesta del error inesperado
       return respuestasAlBack("error", "Error interno campo seccion");
+    }
+  }
+
+  /**
+   Valida el campo de nacionalidad. Acepta valores 1 o 2 (numéricos o string) que representan venezolano o
+   extranjero. Convierte el valor a booleano: 1 → true (venezolano), 2 → false (extranjero).
+   @function validarCampoNacionalidad
+   @param {string|number} nacionalidad - Valor de la nacionalidad ingresada (1 o 2).
+   @returns {Object} Objeto con estado, mensaje y nacionalidad convertido a booleano.
+  */
+  static validarCampoNacionalidad(nacionalidad) {
+    try {
+      // 1. Verifica si el campo está vacío
+      if (
+        nacionalidad === null ||
+        nacionalidad === undefined ||
+        nacionalidad === ""
+      ) {
+        return respuestasAlBack("error", "Error, campo nacionalidad vacío");
+      }
+
+      // 2. Normaliza el valor a string en minúsculas
+      const valor = String(nacionalidad).toLowerCase().trim();
+
+      // 3. Acepta valores válidos: "1", "2", "true", "false"
+      if (!["1", "2", "true", "false"].includes(valor)) {
+        return respuestasAlBack(
+          "error",
+          "Error, campo debe ser venezolano o extranjero",
+        );
+      }
+
+      // 4. Convierte a booleano (ejemplo: 1/venezolano = true, 2/extranjero = false)
+      let nacionalidadBooleana;
+      if (valor === "1" || valor === "true") {
+        nacionalidadBooleana = true;
+      } else {
+        nacionalidadBooleana = false;
+      }
+
+      // 5. Retorna respuesta exitosa
+      return respuestasAlBack("ok", "Campo nacionalidad validado...", {
+        nacionalidad: nacionalidadBooleana,
+      });
+    } catch (error) {
+      console.log("Error interno campo nacionalidad:", error);
+      return respuestasAlBack("error", "Error interno campo nacionalidad...");
     }
   }
 

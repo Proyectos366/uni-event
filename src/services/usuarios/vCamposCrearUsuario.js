@@ -1,3 +1,4 @@
+import CifrarDescifrarClaves from "@/libs/CifrarDescifrarClaves";
 import respuestasAlBack from "@/libs/respuestasAlBack";
 import ValidarCampos from "@/services/ValidarCampos";
 
@@ -31,8 +32,10 @@ export default async function vCamposCrearUsuario(campos) {
       correo,
       claveUno,
       claveDos,
-      rolId = rolId ?? 4,
+      rolId,
     } = campos;
+
+    const idRol = rolId ?? 4;
 
     // 1. Validaciones individuales usando la clase
     const validarCedula = ValidarCampos.validarCampoCedula(cedula);
@@ -54,7 +57,7 @@ export default async function vCamposCrearUsuario(campos) {
       ValidarCampos.validarCampoNacionalidad(nacionalidad);
     const validarTelefono = ValidarCampos.validarCampoTelefono(telefono);
     const validarClave = ValidarCampos.validarCampoClave(claveUno, claveDos);
-    const validarRolId = ValidarCampos.validarCampoId(rolId, "rol", true);
+    const validarRolId = ValidarCampos.validarCampoId(idRol, "rol", true);
 
     // 2. Retorna el primer error encontrado
     if (validarCedula.status === "error") return validarCedula;

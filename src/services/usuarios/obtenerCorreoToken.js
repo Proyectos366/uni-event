@@ -24,6 +24,12 @@ export default async function obtenerCorreoToken() {
     // 2. Extraer el valor del token usando el nombre definido en 'nombreToken'.
     const token = cookieStore.get(nombreToken)?.value;
 
+    if (!token) {
+      return respuestasAlBack("ok", "No hay token: usuario no autenticado", {
+        token: false,
+      });
+    }
+
     // 3. Descifrar el token para obtener los datos del usuario.
     const descifrarToken = AuthTokens.descifrarToken(token);
 

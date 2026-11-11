@@ -7,9 +7,10 @@ export default function DashboardCliente() {
   const router = useRouter();
 
   async function cerrarSesion() {
-    await fetch("/api/login"); // GET = logout: borra la cookie
+    await fetch("/api/login/cerrar-sesion"); // GET = logout: borra la cookie
     router.push("/login");
   }
 
   return <Dashboard onLogout={cerrarSesion} />;
 }
+  
