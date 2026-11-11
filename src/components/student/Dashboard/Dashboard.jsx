@@ -1,14 +1,16 @@
+"use client";
+
 import React, { useState } from 'react';
-import Button from '../../../components/Button';
+import Button from '@/components/botones/Button';
 import CardEvent from '../../../components/CardEvent';
 import Sidebar from '../../../components/Sidebar';
 import Actividades from '../Actividades/Actividades';
 import PerfilDatos from '../PerfilDatos/PerfilDatos';
 import MisActividades from '../MisActividades/MisActividades';
 import Certificados from '../Certificados/Certificados';
-import dataAnalysisImg from '../../../assets/data_analysis_event.png';
-import uxUiImg from '../../../assets/ux_ui_event.png';
-import imagoTipo from '../../../assets/ImagoTipo.png';
+const dataAnalysisImg = "/assets/data_analysis_event.png";
+const uxUiImg = "/assets/ux_ui_event.png";
+const imagoTipo = "/icons/icon.svg";
 
 /**
  * Vista de Dashboard de Estudiante (Dashboard.jsx).
