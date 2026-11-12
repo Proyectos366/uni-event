@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Variante `dark:` por clase (por si algún componente nuevo la usa). */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Tema de UniEvent (tomado del proyecto original Proyecto-de-Grado-I-UniEvent) */
 @theme {
   --color-unievents-teal: #14b8a6;
@@ -10,7 +13,105 @@
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
 }
 
+/* Colores de las gráficas (SVG) según el tema */
+:root {
+  --chart-grid: #e5e7eb;
+  --chart-text: #9ca3af;
+  --chart-label: #6b7280;
+  --chart-strong: #134e4a;
+  --chart-surface: #ffffff;
+}
+
 body {
   color: #134e4a;
-  background-color: #fefce8;
+  background-color: var(--color-unievents-bg);
 }
+
+/* =====================================================================
+   TEMA OSCURO (clase `dark` en <html>; el tema claro es el predeterminado)
+   Estrategia: se redefinen las variables de color de Tailwind que solo se usan como
+   "superficies / bordes / textos secundarios" (grises, tintes de estado) y se ajustan por clase
+   las pocas que se usan además sobre degradados (blanco, teal-50/100, unievents-dark).
+   ===================================================================== */
+.dark {
+  color-scheme: dark; /* selects, calendarios y barras de desplazamiento nativos */
+
+  /* Página y escala de grises invertida, con tono verdoso de marca */
+  --color-unievents-bg: #0a1312;
+  --color-gray-50: #142422;
+  --color-gray-100: #1a2d2b;
+  --color-gray-200: #264340;
+  --color-gray-300: #38605b;
+  --color-gray-400: #86a5a1;
+  --color-gray-500: #a1bbb7;
+  --color-gray-600: #bdd0cd;
+  --color-gray-700: #d3e1df;
+  --color-gray-800: #e5eeed;
+  --color-gray-900: #f1f6f5;
+  --color-slate-50: #142422;
+  --color-slate-100: #1a2d2b;
+  --color-slate-200: #264340;
+  --color-slate-300: #38605b;
+  --color-slate-400: #86a5a1;
+  --color-slate-500: #a1bbb7;
+  --color-slate-600: #bdd0cd;
+  --color-slate-700: #d3e1df;
+
+  /* Tintes de estado (fondos y bordes suaves) y sus textos oscuros -> versiones para fondo oscuro */
+  --color-emerald-50: #0e2a22;  --color-emerald-100: #123a2e;  --color-emerald-200: #1b5a46;  --color-emerald-800: #6ee7b7;
+  --color-amber-100: #3a2c0d;   --color-amber-200: #5a4413;    --color-amber-800: #fcd34d;
+  --color-red-50: #2a1416;      --color-red-100: #3a1a1d;      --color-red-200: #5a2326;
+  --color-rose-100: #3a1a22;    --color-rose-200: #5a2330;     --color-rose-800: #fda4af;
+  --color-sky-50: #0e2530;      --color-sky-100: #12384a;      --color-sky-600: #38bdf8;  --color-sky-800: #7dd3fc;
+  --color-violet-100: #2a2150;  --color-violet-800: #c4b5fd;
+  --color-cyan-800: #67e8f9;
+
+  --chart-grid: #264340;
+  --chart-text: #86a5a1;
+  --chart-label: #a1bbb7;
+  --chart-strong: #e6f4f2;
+  --chart-surface: #101e1d;
+
+  background-color: #0a1312;
+  color: #e6f4f2;
+}
+
+/* Superficies */
+.dark body { color: #e6f4f2; background-color: #0a1312; }
+.dark .bg-white { background-color: #101e1d; }
+.dark .bg-white\/80 { background-color: rgb(10 19 18 / 0.82); }
+.dark .bg-\[\#fcfcfc\] { background-color: #142422; }
+
+/* Textos */
+.dark .text-unievents-dark { color: #e6f4f2; }
+.dark .bg-unievents-gold.text-unievents-dark,
+.dark .bg-unievents-gold .text-unievents-dark { color: #134e4a; } /* texto oscuro sobre dorado */
+.dark .hover\:text-unievents-dark:hover { color: #ffffff; }
+.dark .text-teal-600, .dark .text-teal-700, .dark .text-teal-800 { color: #5eead4; }
+.dark .hover\:text-teal-700:hover { color: #99f6e4; }
+
+/* Tintes teal (fondos suaves) */
+.dark .bg-teal-50 { background-color: #0f2e2b; }
+.dark .bg-teal-50\/40 { background-color: rgb(20 184 166 / 0.08); }
+.dark .bg-teal-50\/50 { background-color: rgb(20 184 166 / 0.1); }
+.dark .bg-teal-100 { background-color: #134540; }
+.dark .bg-teal-100\/60 { background-color: rgb(20 184 166 / 0.18); }
+.dark .hover\:bg-teal-50:hover { background-color: #143c38; }
+.dark .hover\:bg-teal-50\/40:hover { background-color: rgb(20 184 166 / 0.12); }
+.dark .hover\:bg-teal-50\/50:hover { background-color: rgb(20 184 166 / 0.14); }
+.dark .from-teal-50 { --tw-gradient-from: #12302d; }
+.dark .from-teal-50\/60 { --tw-gradient-from: rgb(20 184 166 / 0.1); }
+.dark .to-white { --tw-gradient-to: #101e1d; }
+
+/* Bordes, anillos y sombras de color */
+.dark .border-teal-100 { border-color: #1d4a45; }
+.dark .border-teal-200 { border-color: #24635c; }
+.dark .hover\:border-teal-300:hover { border-color: #2c8077; }
+.dark .ring-teal-100,
+.dark .focus\:ring-teal-100:focus,
+.dark .focus-within\:ring-teal-100:focus-within { --tw-ring-color: rgb(20 184 166 / 0.28); }
+.dark .shadow-teal-200 { --tw-shadow-color: rgb(20 184 166 / 0.28); }
+.dark .hover\:bg-red-50:hover { background-color: #34181b; }
+
+/* Scroll y selección con la marca */
+.dark ::selection { background: rgb(20 184 166 / 0.35); }

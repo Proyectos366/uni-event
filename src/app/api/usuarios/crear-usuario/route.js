@@ -60,7 +60,7 @@ export async function POST(request) {
           apellido: validaciones.apellido,
           apellidoDos: validaciones.apellidoDos,
           f_n: validaciones.f_n,
-          genero: true,
+          genero: validaciones.genero,
           nacionalidad: validaciones.nacionalidad,
           telefono: validaciones.telefono,
           correo: validaciones.correo,

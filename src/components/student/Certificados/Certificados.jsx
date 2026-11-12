@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import PageHero from '../ui/PageHero';
+import PageHero from '@/components/ui/PageHero';
 import jsPDF from 'jspdf';
 import Button from '@/components/botones/Button';
 const templateCertificado = "/assets/Certificado UniEvent.jpg";
@@ -12,7 +12,7 @@ const templateCertificado = "/assets/Certificado UniEvent.jpg";
  * permite la previsualización interactiva en tiempo real sobre la plantilla oficial y
  * la descarga de un certificado en PDF usando jsPDF.
  */
-const Certificados = () => {
+const Certificados = ({ nombre }) => {
   // Estado para controlar qué certificado se está previsualizando en el Modal
   const [previewCert, setPreviewCert] = useState(null);
   
@@ -72,7 +72,7 @@ const Certificados = () => {
         doc.setFont('Helvetica', 'bold');
         doc.setFontSize(26);
         doc.setTextColor(19, 78, 74); // #134e4a (unievents-dark)
-        doc.text("Gabriel Bolivar", 400, 275, { align: 'center' });
+        doc.text(nombre, 400, 275, { align: 'center' });
 
         // 2. Título completo de la actividad/evento
         doc.setFont('Helvetica', 'bold');
@@ -239,7 +239,7 @@ const Certificados = () => {
                 {/* 1. Nombre del Estudiante */}
                 <div className="absolute top-[44.5%] left-1/2 -translate-x-1/2 w-full text-center px-4">
                   <h2 className="text-[20px] sm:text-[28px] font-black text-unievents-dark tracking-wide font-serif drop-shadow-xs select-text">
-                    Gabriel Bolivar
+                    {nombre}
                   </h2>
                 </div>
 

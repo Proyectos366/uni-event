@@ -5,6 +5,7 @@ import Input from '../../../components/input/Input';
 import InputEmail from '../../../components/input/types/InputEmail';
 import InputPassword from '../../../components/input/types/InputPassword';
 import Button from '@/components/botones/Button';
+import { nombreCompleto } from '@/utils/capitalizar';
 import Ico from '@/components/register/Ico';
 
 /**
@@ -12,12 +13,12 @@ import Ico from '@/components/register/Ico';
  * Despliega información personal, cambio seguro de contraseña en una grilla simétrica
  * y estadísticas de participación del estudiante ocupando el ancho completo en la parte inferior.
  */
-const PerfilDatos = () => {
+const PerfilDatos = ({ perfil }) => {
   // Estado local para datos personales
   const [personalData, setPersonalData] = useState({
-    nombre: 'Gabriel Bolivar',
-    email: 'gabrielbolivar@gmail.com',
-    telefono: '0424-3540261',
+    nombre: nombreCompleto(perfil),
+    email: perfil.correo,
+    telefono: perfil.telefono,
     departamento: ''
   });
 
@@ -95,7 +96,7 @@ const PerfilDatos = () => {
           {/* Badges de Cédula y Rol */}
           <div className="flex flex-wrap gap-2.5 justify-center sm:justify-start pt-1">
             <span className="bg-slate-800/80 backdrop-blur-sm text-white text-[10px] font-black px-3 py-1 rounded-lg uppercase tracking-wider select-none border border-slate-700/30">
-              V-28051690
+              {perfil.nacionalidad ? 'V' : 'E'}-{perfil.cedula}
             </span>
             <span className="bg-unievents-teal text-white text-[10px] font-black px-3 py-1 rounded-lg uppercase tracking-wider select-none border border-unievents-teal/30">
               Estudiante

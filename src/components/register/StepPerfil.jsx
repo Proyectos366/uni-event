@@ -13,7 +13,7 @@ export default function StepPerfil({ formData, updateFormData, errors = {} }) {
     <div className="flex flex-col gap-5">
       <div>
         <h3 className="text-xl font-bold text-unievents-dark">Información personal</h3>
-        <p className="text-sm text-gray-500">Usa los datos de tu documento de identidad.</p>
+        <p className="text-sm text-gray-500">Datos del documento de identidad.</p>
       </div>
 
       {/* Cédula con nacionalidad integrada: V (1 = venezolano) o E (2 = extranjero), como espera el back */}

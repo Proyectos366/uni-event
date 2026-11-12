@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import PageHero from '../ui/PageHero';
+import PageHero from '@/components/ui/PageHero';
 import CardEvent from '../../../components/CardEvent';
 import Button from '@/components/botones/Button';
 import DetalleActividad from './DetalleActividad';

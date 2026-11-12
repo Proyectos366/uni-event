@@ -11,7 +11,7 @@ export default function StepDatos({ formData, updateFormData, errors = {} }) {
     <div className="flex flex-col gap-5">
       <div>
         <h3 className="text-xl font-bold text-unievents-dark">Datos de acceso</h3>
-        <p className="text-sm text-gray-500">Con estos datos iniciarás sesión.</p>
+        <p className="text-sm text-gray-500">Credenciales para iniciar sesión en el sistema.</p>
       </div>
 
       <InputEmail

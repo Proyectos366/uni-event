@@ -25,13 +25,13 @@ export default async function validarConsultarTodosUsuarios() {
     }
 
     // 3. Verificar si el usuario tiene permisos (rol 1 o rol 2).
-    if (validaciones.id_rol !== 1 && validaciones.id_rol !== 2) {
+    if (validaciones.rolId !== 1 && validaciones.rolId !== 2) {
       return respuestasAlBack("error", "Error, usuario no tiene permisos");
     }
 
     // 4. Si todas las validaciones son correctas, se consolidan y retornan los datos validados.
     return respuestasAlBack("ok", "Validacion correcta", {
-      id_usuario: validaciones.id_usuario,
+      id_usuario: validaciones.usuarioId,
       correo: validaciones.correo,
     });
   } catch (error) {

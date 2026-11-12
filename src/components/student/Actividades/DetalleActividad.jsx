@@ -25,7 +25,7 @@ const DetalleActividad = ({ activity, onBack, onPurchaseSuccess }) => {
     number: '',
     expiry: '',
     cvc: '',
-    holder: 'Gabriel Bolivar'
+    holder: ''
   });
 
   const handleInputChange = (e) => {

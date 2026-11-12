@@ -3,8 +3,10 @@
 import React, { useState } from 'react';
 import Button from '@/components/botones/Button';
 import CardEvent from '../../../components/CardEvent';
-import Sidebar from '../../../components/Sidebar';
+import Sidebar from '../Sidebar';
 import Actividades from '../Actividades/Actividades';
+import ThemeToggle from '@/components/ui/ThemeToggle';
+import { nombreCompleto } from '@/utils/capitalizar';
 import PerfilDatos from '../PerfilDatos/PerfilDatos';
 import MisActividades from '../MisActividades/MisActividades';
 import Certificados from '../Certificados/Certificados';
@@ -16,7 +18,7 @@ const imagoTipo = "/icons/icon.svg";
  * Vista de Dashboard de Estudiante (Dashboard.jsx).
  * Muestra un panel central interactivo y delega la barra lateral al componente global Sidebar.
  */
-const Dashboard = ({ onLogout }) => {
+const Dashboard = ({ onLogout, perfil }) => {
   // Pestaña activa del dashboard
   const [activeTab, setActiveTab] = useState('inicio');
 
@@ -149,13 +151,15 @@ const Dashboard = ({ onLogout }) => {
              activeTab.replace('-', ' ')}
           </h2>
 
+          <ThemeToggle />
+
           {/* Usuario */}
           <div className="flex items-center gap-3 rounded-full bg-white pl-1.5 pr-4 py-1.5 shadow-sm border border-gray-100 shrink-0">
             <span className="grid place-items-center w-9 h-9 rounded-full bg-gradient-to-br from-teal-400 to-unievents-dark text-white font-black select-none">
-              G
+              {perfil.nombre[0]}
             </span>
             <div className="hidden sm:flex flex-col leading-tight select-none">
-              <span className="font-extrabold text-unievents-dark text-sm">Gabriel</span>
+              <span className="font-extrabold text-unievents-dark text-sm">{perfil.nombre}</span>
               <span className="text-[10px] font-bold uppercase tracking-wider text-unievents-teal">Estudiante</span>
             </div>
           </div>
@@ -172,7 +176,7 @@ const Dashboard = ({ onLogout }) => {
                 <div className="absolute -bottom-20 left-10 w-56 h-56 rounded-full bg-teal-300/20 blur-3xl" />
                 <div className="relative max-w-2xl">
                   <p className="text-sm font-bold uppercase tracking-widest text-unievents-gold">Panel del estudiante</p>
-                  <h3 className="mt-2 text-3xl sm:text-4xl font-black tracking-tight">¡Hola, Gabriel!</h3>
+                  <h3 className="mt-2 text-3xl sm:text-4xl font-black tracking-tight">¡Hola, {perfil.nombre}!</h3>
                   <p className="mt-3 text-teal-50/90 text-lg leading-relaxed">
                     Encuentra cursos y eventos, revisa tus inscripciones y descarga tus certificados.
                   </p>
@@ -386,11 +390,11 @@ const Dashboard = ({ onLogout }) => {
               onClearSelectedActivity={() => setSelectedActivityForDetails(null)} 
             />
           ) : activeTab === 'perfil-datos' ? (
-            <PerfilDatos />
+            <PerfilDatos perfil={perfil} />
           ) : activeTab === 'mis-actividades' ? (
             <MisActividades />
           ) : activeTab === 'certificados' ? (
-            <Certificados />
+            <Certificados nombre={nombreCompleto(perfil)} />
           ) : (
             // Placeholder para otras pestañas del Sidebar
             <div className="flex flex-col items-center justify-center min-h-[50vh] text-center space-y-4 animate-in fade-in duration-300">

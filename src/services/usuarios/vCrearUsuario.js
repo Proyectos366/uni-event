@@ -54,7 +54,7 @@ export default async function vCrearUsuario(body, token) {
         telefono: validarCampos.telefono,
         correo: validarCampos.correo,
         claveEncriptada: validarCampos.claveEncriptada,
-        rolId: validarCampos.rolId,
+        rolId: 4, // sin sesión solo se permite auto-registro como alumno
         token: crearToken.token,
       });
     }

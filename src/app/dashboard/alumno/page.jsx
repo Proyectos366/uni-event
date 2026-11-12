@@ -1,9 +1,10 @@
 import exigirSesion from "@/services/usuarios/exigirSesion";
+import obtenerPerfil from "@/services/usuarios/obtenerPerfil";
 import DashboardCliente from "@/components/dashboard/alumno/DashboardCliente";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardAlumnoView() {
   await exigirSesion([4]);
-  return <DashboardCliente />;
+  return <DashboardCliente perfil={await obtenerPerfil()} />;
 }

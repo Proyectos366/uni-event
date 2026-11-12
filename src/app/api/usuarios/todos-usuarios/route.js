@@ -52,22 +52,22 @@ export async function GET() {
         correo: true,
         nombre: true,
         apellido: true,
+        telefono: true,
+        genero: true,
+        nacionalidad: true,
         borrado: true,
-        validado: true,
+        estatus: true,
         createdAt: true,
-        id_rol: true,
+        rolId: true,
         roles: {
           select: { id: true, nombre: true },
-        },
-        MiembrosDepartamentos: {
-          select: { id: true, nombre: true, descripcion: true },
         },
       },
     });
 
     // 4. Verifica si se obtuvieron resultados válidos
     if (!todosUsuarios) {
-      return respuestasAlFrontBinaria(
+      return respuestasAlFront(
         "error",
         "Error, al consultar todos usuarios",
         {},
@@ -76,7 +76,7 @@ export async function GET() {
     }
 
     // 5. Retorna la lista de usuarios en una respuesta exitosa
-    return respuestasAlFrontBinaria(
+    return respuestasAlFront(
       "ok",
       "Usuarios encontrados",
       { usuarios: todosUsuarios },
@@ -87,7 +87,7 @@ export async function GET() {
     console.log(`Error interno, todos usuarios:`, error);
 
     // Retorna una respuesta de error con un código de estado 500 (Internal Server Error)
-    return respuestasAlFrontBinaria(
+    return respuestasAlFront(
       "error",
       "Error interno todos usuarios",
       {},

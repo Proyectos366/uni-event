@@ -38,6 +38,11 @@ export default async function obtenerDatosUsuarioToken() {
         id: true,
         cedula: true,
         nombre: true,
+        nombreDos: true,
+        apellido: true,
+        apellidoDos: true,
+        telefono: true,
+        nacionalidad: true,
       },
     });
 
@@ -50,9 +55,14 @@ export default async function obtenerDatosUsuarioToken() {
     return respuestasAlBack("ok", "Datos usuario obtenidos", {
       cedula: datosUsuario.cedula,
       nombre: datosUsuario.nombre,
+      nombreDos: datosUsuario.nombreDos,
+      apellido: datosUsuario.apellido,
+      apellidoDos: datosUsuario.apellidoDos,
+      telefono: datosUsuario.telefono,
+      nacionalidad: datosUsuario.nacionalidad,
       correo: validaciones.correo,
       usuarioId: datosUsuario.id,
-      rolId: validaciones.rolId,
+      rolId: validaciones.id_rol, // obtenerCorreoToken devuelve el rol como id_rol
     });
   } catch (error) {
     // 6. Manejo de errores inesperados.

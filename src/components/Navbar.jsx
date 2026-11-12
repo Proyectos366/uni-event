@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 const imagoTipo = "/icons/icon_imagotipo.svg";
 import { useRouter } from 'next/navigation';
 import Button from '@/components/botones/Button';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 const RUTAS = { home: '/', cursos: '/cursos', eventos: '/eventos', register: '/register', login: '/login' };
 
@@ -18,18 +19,20 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-unievents-bg shadow-md sticky top-0 z-50 px-6 py-0 min-h-[55px]">
-      <div className="flex justify-between items-center max-w-7xl mx-auto">
+    <nav className="bg-unievents-bg shadow-md sticky top-0 z-50 px-[6px] py-0 min-h-[55px]">
+      <div className="flex justify-between items-center w-full">
         {/* Logotipo interactivo con IsoTipo */}
         <div
-          className="flex items-center mt-2 gap-2 cursor-pointer"
+          className="flex items-center mt-2 gap-2 -ml-[14px] cursor-pointer"
           onClick={() => handleNavigate('home')}
         >
           <img src={imagoTipo} alt="UniEvent" className="h-35 w-auto object-contain -my-[73px] relative z-10" />
         </div>
 
         {/* Botón Menú Hamburguesa (Móvil) */}
-        <button 
+        <div className="md:hidden flex items-center gap-2">
+          <ThemeToggle className="relative top-1.5" />
+          <button 
           className="md:hidden mt-3 text-unievents-teal focus:outline-none"
           onClick={() => setIsOpen(!isOpen)}
         >
@@ -41,9 +44,11 @@ const Navbar = () => {
             )}
           </svg>
         </button>
+        </div>
 
         {/* Enlaces de Navegación (Escritorio) */}
         <div className="hidden md:flex mt-2 space-x-8 items-center">
+          <ThemeToggle />
           <button 
             className="text-gray-600 hover:text-unievents-teal font-medium transition" 
             onClick={() => handleNavigate('cursos')}
