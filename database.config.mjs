@@ -36,6 +36,6 @@ export function getSqliteDatabaseUrl(env = process.env) {
     env.SQLITE_DATABASE_URL ||
     (env.DATABASE_URL?.startsWith("file:")
       ? env.DATABASE_URL
-      : "file:./prisma/dev.db")
+      : "file:./prisma/prisma/dev.db")
   );
 }

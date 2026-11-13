@@ -10,7 +10,7 @@ docker compose up
 docker compose up --build
 
 // Crear un archivo .env en la raiz del proyecto y agregar:
-DATABASE_URL="file:./prisma/dev.db"
+DATABASE_URL="file:./prisma/prisma/dev.db"
 JWT_SECRET = miTextoSecreto
 JWT_EXPIRATION = 12h
 JWT_COOKIE_EXPIRES = 1
